@@ -1,0 +1,949 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>tuple - a few notes</title><meta name=description content="a short note on std::tuple and it&rsquo;s usage"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2011\/05\/12\/tuple\/","name":"Tuple"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"tuple","description":"a short note on std::tuple and it\u0026rsquo;s usage","inLanguage":"en","wordCount":2190,"datePublished":"2011-05-12T00:00:00","dateModified":"2011-05-12T00:00:00","image":"https:\/\/www.variadic.xyz\/","keywords":["C\u002b\u002b, C\u002b\u002b11"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2011\/05\/12\/tuple\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="tuple"><meta property="og:description" content="a short note on std::tuple and it&rsquo;s usage"><meta property="og:url" content="https://www.variadic.xyz/2011/05/12/tuple/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="tuple"><meta name=twitter:description content="a short note on std::tuple and it&rsquo;s usage"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span></button>
+<a class=navbar-brand href=https://www.variadic.xyz/>a few notes</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Notes href=/>Notes</a></li><li><a title=Archive href=/archive/>Archive</a></li><li><a title=Tags href=/tags/>Tags</a></li><li><a title=About href=/about/>About</a></li><li><a title=Disclaimer href=/disclaimer/>Disclaimer</a></li><li><a title=Books href=/books/>Books</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>tuple</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on May 12, 2011</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><h2 id=the-problem-with-multiple-return-values>The problem with multiple return values</h2><hr><p>C++ is a C based language and keeps it’s limitation of returning a single value from a function. you can’t even return an array of objects from a function. However real life application at times need to return multiple data from a function.
+Generally this is how we return multiple values from a function:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>struct</span> <span style=color:#75af00>MultipleReturnValues</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>d</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>int</span> <span style=color:#111>i</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>char</span> <span style=color:#111>c</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#111>MultipleReturnValues</span> <span style=color:#75af00>MultiReturnValueFunction</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  really complicated logic
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  ...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>MultipleReturnValues</span> <span style=color:#111>retval</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>retval</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#75af00>MultiReturnValueFunction2</span><span style=color:#111>(</span><span style=color:#00a8c8>double</span><span style=color:#f92672>*</span> <span style=color:#111>d</span><span style=color:#111>,</span> <span style=color:#00a8c8>char</span><span style=color:#f92672>*</span> <span style=color:#111>c</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>MultipleReturnValues</span> <span style=color:#111>retVal</span> <span style=color:#f92672>=</span> <span style=color:#111>MultiReturnValueFunction</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>d</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>char</span> <span style=color:#111>c</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#f92672>=</span> <span style=color:#111>MultiReturnValueFunction2</span><span style=color:#111>(</span><span style=color:#f92672>&amp;</span><span style=color:#111>d</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#111>c</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Which implies we define a new structure every time we have to return more than one value or increase the number of parameters to the function. Both of these are painful in long run, creating and maintaining a struct is at times tedious and with so many variables to a function it is very difficult to understand what each parameter does.</p><h2 id=stdpair>std::pair</h2><hr><p>standard library has a utility to group two values together also knows as <code>std::pair</code>, it is a template that takes in two values. It is used extensively with standard containers to return a pair of values from functions. Lets see how we can use it to return multiple values:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 49
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 50
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 51
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 52
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 53
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 54
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 55
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 56
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 57
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 58
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 59
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 60
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 61
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 62
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 63
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 64
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 65
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 66
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 67
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 68
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 69
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 70
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 71
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 72
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 73
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 74
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 75
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 76
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 77
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 78
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 79
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 80
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 81
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 82
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 83
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 84
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 85
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 86
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 87
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 88
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 89
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 90
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 91
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 92
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 93
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 94
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 95
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 96
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 97
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 98
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 99
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">100
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>#include</span>  <span style=color:#75715e>&lt;utility&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>typedef</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>pair</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span> <span style=color:#111>TwoInts</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#111>TwoInts</span> <span style=color:#75af00>TwoIntsFunction</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>TwoInts</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>void</span> <span style=color:#75af00>TwoIntsFunction_Demo</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>TwoInts</span> <span style=color:#111>twoInts</span> <span style=color:#f92672>=</span> <span style=color:#111>TwoIntsFunction</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  accessing values
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>int</span> <span style=color:#111>firstInt</span> <span style=color:#f92672>=</span> <span style=color:#111>twoInts</span><span style=color:#111>.</span><span style=color:#111>first</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>int</span> <span style=color:#111>secondInt</span> <span style=color:#f92672>=</span> <span style=color:#111>twoInts</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//  what if you want to send in different types
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  pair can be very useful since it is templated
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  you dont need to define a new struct everytime
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>typedef</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>pair</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>double</span><span style=color:#111>,</span> <span style=color:#00a8c8>double</span><span style=color:#f92672>&gt;</span> <span style=color:#111>TwoDoubles</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#111>TwoDoubles</span> <span style=color:#75af00>TwoDoublesFunction</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>TwoDoubles</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>void</span> <span style=color:#75af00>TwoDoublesFunction_Demo</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>TwoDoubles</span> <span style=color:#111>twoDoubles</span> <span style=color:#f92672>=</span> <span style=color:#111>TwoDoublesFunction</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  accessing values
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>double</span> <span style=color:#111>firstDouble</span> <span style=color:#f92672>=</span> <span style=color:#111>twoDoubles</span><span style=color:#111>.</span><span style=color:#111>first</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>secondDouble</span> <span style=color:#f92672>=</span> <span style=color:#111>twoDoubles</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//  what if three doubles??
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  pair is really convinient for two values
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  but is manageable with three
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>typedef</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>pair</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>double</span><span style=color:#111>,</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>pair</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>double</span><span style=color:#111>,</span> <span style=color:#00a8c8>double</span><span style=color:#f92672>&gt;&gt;</span> <span style=color:#111>ThreeDoubles</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#111>ThreeDoubles</span> <span style=color:#75af00>ThreeDoublesFunction</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>ThreeDoubles</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>void</span> <span style=color:#75af00>ThreeDoublesFunction_Demo</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>ThreeDoubles</span> <span style=color:#111>threeDoubles</span> <span style=color:#f92672>=</span> <span style=color:#111>ThreeDoublesFunction</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  accessing values
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  little ugly but manageable
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>double</span> <span style=color:#111>firstDouble</span> <span style=color:#f92672>=</span> <span style=color:#111>threeDoubles</span><span style=color:#111>.</span><span style=color:#111>first</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>secondDouble</span> <span style=color:#f92672>=</span> <span style=color:#111>threeDoubles</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>first</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>thirdDouble</span> <span style=color:#f92672>=</span> <span style=color:#111>threeDoubles</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//  real life is not so cool, that you want to return just
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  2-3 things, at times you need to return 5 values
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  lets see how the pair looks for 5 arguments
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>class</span> <span style=color:#75af00>C</span>
+</span></span><span style=display:flex><span><span style=color:#111>{};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//  pretty cool huh, I feel like double right shifted!
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>typedef</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>pair</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>double</span><span style=color:#111>,</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>pair</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#111>,</span>
+</span></span><span style=display:flex><span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>pair</span><span style=color:#f92672>&lt;</span> <span style=color:#00a8c8>char</span><span style=color:#111>,</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>pair</span><span style=color:#f92672>&lt;</span><span style=color:#111>C</span><span style=color:#111>,</span><span style=color:#00a8c8>float</span><span style=color:#f92672>&gt;&gt;&gt;&gt;</span> <span style=color:#111>FiveRetVals</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#111>FiveRetVals</span> <span style=color:#75af00>FiveRetValsFunction</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>FiveRetVals</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>void</span> <span style=color:#75af00>FiveRetValsFunction_Demo</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>FiveRetVals</span> <span style=color:#111>fiveRetVals</span> <span style=color:#f92672>=</span> <span style=color:#111>FiveRetValsFunction</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  accessing values
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  good
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>double</span> <span style=color:#111>first</span> <span style=color:#f92672>=</span> <span style=color:#111>fiveRetVals</span><span style=color:#111>.</span><span style=color:#111>first</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  Ok
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>int</span> <span style=color:#111>second</span> <span style=color:#f92672>=</span> <span style=color:#111>fiveRetVals</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>first</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  huh??
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>char</span> <span style=color:#111>third</span> <span style=color:#f92672>=</span> <span style=color:#111>fiveRetVals</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>first</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  what??
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>C</span> <span style=color:#111>fourth</span> <span style=color:#f92672>=</span> <span style=color:#111>fiveRetVals</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>first</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  forget it!
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>float</span> <span style=color:#111>fifth</span> <span style=color:#f92672>=</span> <span style=color:#111>fiveRetVals</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>.</span><span style=color:#111>second</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>TwoIntsFunction_Demo</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>ThreeDoublesFunction_Demo</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>FiveRetValsFunction_Demo</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>As it is evident pair is not a really good solution if you want to group more that 2 values together. What is really required is an extension of pair that can take in n number of values.
+BTW if you observe closely you will notice that pair is actually a specialization of <a href=http://en.wikipedia.org/wiki/Tuple>tuple</a>.</p><h2 id=using-tuple>using tuple</h2><hr><p>In previous example:
+ThreeDoubles –> tuple with 3 elements
+FiveRetVals –> tuple with 5 elements
+in all of the above cases what we really want is a tuple with varying number of elements
+such a construct was added to TR1 named tuple</p><p>Above code with tuples instead of pairs:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">49
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">50
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">51
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">52
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">53
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">54
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">55
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">56
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">57
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">58
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">59
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">60
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">61
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">62
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">63
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">64
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">65
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">66
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;tuple&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  for three doubles??
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  pair is really convinient for two values
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  tuple for any number of values
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>typedef</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>tuple</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>double</span><span style=color:#111>,</span> <span style=color:#00a8c8>double</span><span style=color:#111>,</span> <span style=color:#00a8c8>double</span><span style=color:#f92672>&gt;</span> <span style=color:#111>ThreeDoubles</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#111>ThreeDoubles</span> <span style=color:#75af00>ThreeDoublesFunction</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>ThreeDoubles</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>void</span> <span style=color:#75af00>ThreeDoublesFunction_Demo</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>ThreeDoubles</span> <span style=color:#111>threeDoubles</span> <span style=color:#f92672>=</span> <span style=color:#111>ThreeDoublesFunction</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  accessing values
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  lot better than nested pairs
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>double</span> <span style=color:#111>firstDouble</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>0</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>threeDoubles</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>secondDouble</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>1</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>threeDoubles</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>thirdDouble</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>2</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>threeDoubles</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  real life is not so cool, that you want to return just
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  2-3 things, at times you need to return 5 values
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//  lets see how the tuple looks for 5 arguments
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>class</span> <span style=color:#75af00>C</span>
+</span></span><span style=display:flex><span><span style=color:#111>{};</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//  pretty cool huh, I don’t feel like double right shifted!
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>typedef</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>tuple</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>double</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span><span style=color:#111>,</span> <span style=color:#00a8c8>char</span><span style=color:#111>,</span> <span style=color:#111>C</span><span style=color:#111>,</span> <span style=color:#00a8c8>float</span><span style=color:#f92672>&gt;</span> <span style=color:#111>FiveRetVals</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#111>FiveRetVals</span> <span style=color:#75af00>FiveRetValsFunction</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>FiveRetVals</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>void</span> <span style=color:#75af00>FiveRetValsFunction_Demo</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>FiveRetVals</span> <span style=color:#111>fiveRetVals</span> <span style=color:#f92672>=</span> <span style=color:#111>FiveRetValsFunction</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  accessing values
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  ok
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>double</span> <span style=color:#111>first</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>0</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>fiveRetVals</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  nice
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>int</span> <span style=color:#111>second</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>1</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>fiveRetVals</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  good
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>char</span> <span style=color:#111>third</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>2</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>fiveRetVals</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  better
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>C</span> <span style=color:#111>fourth</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>3</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>fiveRetVals</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  wow
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>float</span> <span style=color:#111>fifth</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>4</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>fiveRetVals</span><span style=color:#111>);;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>ThreeDoublesFunction_Demo</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>FiveRetValsFunction_Demo</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=tuple-101>tuple 101</h2><hr><p>Primarily <code>tuple</code> started off to address multiple return values, however it can be used to keep grouped data together, as an alternative to locally created structures. At the end we will see an example, although contrived, how to use tuples.</p><blockquote><p><code>tuple</code> was initially introduced by Jakko Jarvi in boost library ~2001. Later it was selected as one of the components to C++ TR1. As part of C++ TR1 tuple has been placed in <code>std::tr1</code> namespace. However with <code>C++11</code> it has been moved to <code>std</code> namespace.
+The code in this post is written in VS 2010 SP1. Same code can be compiled using GCC 4.6, but you will have to replace <code>std::tr1</code> with <code>std</code>.</p></blockquote><p>Basic usage of tuple:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 49
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 50
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 51
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 52
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 53
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 54
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 55
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 56
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 57
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 58
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 59
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 60
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 61
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 62
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 63
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 64
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 65
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 66
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 67
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 68
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 69
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 70
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 71
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 72
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 73
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 74
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 75
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 76
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 77
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 78
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 79
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 80
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 81
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 82
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 83
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 84
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 85
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 86
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 87
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 88
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 89
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 90
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 91
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 92
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 93
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 94
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 95
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 96
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 97
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 98
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 99
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">100
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">101
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">102
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">103
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">104
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">105
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">106
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">107
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">108
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">109
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">110
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">111
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">112
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">113
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">114
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">115
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">116
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">117
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">118
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">119
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">120
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">121
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">122
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">123
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">124
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">125
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">126
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">127
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">128
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">129
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">130
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">131
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">132
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">133
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// include tuple for tuple related functionality
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;tuple&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// class that is convertible to-and-from double
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// to demonstrate the tuple assignment and comparison
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>class</span> <span style=color:#75af00>Double</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>d</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>Double</span><span style=color:#111>(</span><span style=color:#00a8c8>double</span> <span style=color:#111>d_</span><span style=color:#111>)</span> <span style=color:#f92672>:</span> <span style=color:#111>d</span><span style=color:#111>(</span><span style=color:#111>d_</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>Double</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>=</span><span style=color:#111>(</span><span style=color:#00a8c8>const</span> <span style=color:#111>Double</span><span style=color:#f92672>&amp;</span> <span style=color:#111>other</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span><span style=color:#111>(</span> <span style=color:#00a8c8>this</span> <span style=color:#f92672>!=</span> <span style=color:#f92672>&amp;</span><span style=color:#111>other</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>d</span> <span style=color:#f92672>=</span> <span style=color:#111>other</span><span style=color:#111>.</span><span style=color:#111>d</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#f92672>*</span><span style=color:#00a8c8>this</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>Double</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>=</span><span style=color:#111>(</span><span style=color:#00a8c8>double</span> <span style=color:#111>dd</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>this</span><span style=color:#f92672>-&gt;</span><span style=color:#111>d</span> <span style=color:#f92672>=</span> <span style=color:#111>dd</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#f92672>*</span><span style=color:#00a8c8>this</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>operator</span> <span style=color:#75af00>double</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>d</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// tuple of two ints, assigned by combining two values
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// make_tuple is equivalent of std::make_pair
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>tuple</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#111>,</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span> <span style=color:#111>twoInts1</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>make_tuple</span><span style=color:#111>(</span><span style=color:#ae81ff>4</span><span style=color:#111>,</span><span style=color:#ae81ff>5</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// direct initialization
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>tuple</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#111>,</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span> <span style=color:#111>twoInts2</span><span style=color:#111>(</span><span style=color:#ae81ff>4</span><span style=color:#111>,</span><span style=color:#ae81ff>5</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// default construction
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>tuple</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#111>,</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span> <span style=color:#111>twoInts3</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// now twoInts2 is twoInts3
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>twoInts2</span> <span style=color:#f92672>=</span> <span style=color:#111>twoInts3</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>tuple</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>double</span><span style=color:#111>,</span> <span style=color:#00a8c8>double</span><span style=color:#f92672>&gt;</span> <span style=color:#111>twoDoubles1</span> <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>make_tuple</span><span style=color:#111>(</span><span style=color:#ae81ff>4.0</span><span style=color:#111>,</span><span style=color:#ae81ff>5.0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// int to double conversion is allowed
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// if you have conversion defined, tuples of different
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// types can be assigned
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>twoDoubles1</span> <span style=color:#f92672>=</span> <span style=color:#111>twoInts3</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// Double class defines conversion to-and-from double
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>Double</span> <span style=color:#111>dbl</span><span style=color:#111>(</span><span style=color:#ae81ff>10.0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>d</span> <span style=color:#f92672>=</span> <span style=color:#111>dbl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// due to conversion operator such assignments are feasible
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>tuple</span><span style=color:#f92672>&lt;</span><span style=color:#111>Double</span><span style=color:#111>,</span><span style=color:#111>Double</span><span style=color:#f92672>&gt;</span> <span style=color:#111>doubles</span> <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>make_tuple</span><span style=color:#111>(</span><span style=color:#ae81ff>9.0</span><span style=color:#111>,</span><span style=color:#ae81ff>8.0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>twoDoubles1</span> <span style=color:#f92672>=</span> <span style=color:#111>doubles</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// querying the elements of a tuple:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// get the first element of
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>double</span> <span style=color:#111>d</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>0</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>doubles</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// get the second element
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>d</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>1</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>doubles</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// fails to compile as there is no 3rd element for this tuple
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// declaration
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// lots of ugly error messages
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>d</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>3</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>doubles</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// checking for equality is supported
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// it&#39;s like checking dbl == d
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// if one of the types in tuple does not provide == operator
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// the code fails to compile
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>if</span><span style=color:#111>(</span> <span style=color:#111>doubles</span> <span style=color:#f92672>==</span> <span style=color:#111>twoDoubles1</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#d88200>&#34;values are same&#34;</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>if</span><span style=color:#111>(</span> <span style=color:#f92672>!</span><span style=color:#111>(</span><span style=color:#111>doubles</span> <span style=color:#f92672>!=</span> <span style=color:#111>twoDoubles1</span><span style=color:#111>)</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#d88200>&#34;values are same&#34;</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// operator &lt;, &gt;, &lt;=, &gt;= are supported if the types specified
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// in tuple support these
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>bool</span> <span style=color:#111>boolean</span> <span style=color:#f92672>=</span> <span style=color:#111>doubles</span> <span style=color:#f92672>&lt;</span> <span style=color:#111>twoDoubles1</span> <span style=color:#f92672>||</span> <span style=color:#111>doubles</span> <span style=color:#f92672>&gt;</span> <span style=color:#111>twoDoubles1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>boolean</span> <span style=color:#f92672>=</span> <span style=color:#111>doubles</span> <span style=color:#f92672>&lt;=</span> <span style=color:#111>twoDoubles1</span> <span style=color:#f92672>||</span> <span style=color:#111>twoDoubles1</span> <span style=color:#f92672>&gt;=</span> <span style=color:#111>doubles</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// streaming operators are not supported with tuples
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>twoDoubles1</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// tie is a utility function can help you get the values out
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// of tuple in local variables easily
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// so its a painless way of getting results from a
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// tuple_returning method.
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>int</span> <span style=color:#111>a</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>int</span> <span style=color:#111>b</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>tie</span><span style=color:#111>(</span><span style=color:#111>a</span><span style=color:#111>,</span><span style=color:#111>b</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#111>twoInts1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=contrived-implementation-using-tuple-events-delegate>contrived implementation using tuple (events-delegate)</h2><hr><p>As promised here is the contrived implementation of event-delegate mechanism in C++ using tuples.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 49
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 50
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 51
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 52
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 53
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 54
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 55
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 56
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 57
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 58
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 59
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 60
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 61
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 62
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 63
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 64
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 65
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 66
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 67
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 68
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 69
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 70
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 71
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 72
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 73
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 74
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 75
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 76
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 77
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 78
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 79
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 80
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 81
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 82
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 83
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 84
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 85
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 86
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 87
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 88
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 89
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 90
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 91
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 92
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 93
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 94
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 95
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 96
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 97
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 98
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 99
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">100
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">101
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">102
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">103
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">104
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">105
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">106
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">107
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">108
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">109
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">110
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">111
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">112
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">113
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">114
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">115
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">116
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">117
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">118
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">119
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">120
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">121
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">122
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">123
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">124
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">125
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">126
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">127
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">128
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">129
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">130
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">131
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">132
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">133
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// implementing a simple event/delegate mechanism
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// note this is contrived code to demonstrate the usage of tuple
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;tuple&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;vector&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// base class of all delegates
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// derive to implement custom notification functionality
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>class</span> <span style=color:#75af00>Delegate</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>protected</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// listener to notification
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>int</span> <span style=color:#111>NotifyCore</span><span style=color:#111>()</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// second type of listener to notification
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>int</span> <span style=color:#75af00>Notify2Core</span><span style=color:#111>()</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>Delegate</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>virtual</span> <span style=color:#f92672>~</span><span style=color:#111>Delegate</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>int</span> <span style=color:#75af00>Notify</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>NotifyCore</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>int</span> <span style=color:#75af00>Notify2</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>Notify2Core</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// implementes the both types of listeners to notification
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>class</span> <span style=color:#75af00>MyDelegate</span> <span style=color:#f92672>:</span> <span style=color:#00a8c8>public</span> <span style=color:#111>Delegate</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>MyDelegate</span><span style=color:#111>()</span> <span style=color:#f92672>:</span> <span style=color:#111>Delegate</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>virtual</span> <span style=color:#f92672>~</span><span style=color:#111>MyDelegate</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>protected</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>int</span> <span style=color:#111>NotifyCore</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#d88200>&#34;Calling from MyDelegate::NotifyCore&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>int</span> <span style=color:#75af00>Notify2Core</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#d88200>&#34;Calling from MyDelegate::Notify2Core&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// class to fire notification to all listeners when some-thing
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// interesting happens
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>class</span> <span style=color:#75af00>Event</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// notification function
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// type of function on Delegate that will be called to notify
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// certain event has taken place
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>typedef</span> <span style=color:#75af00>int</span><span style=color:#111>(</span><span style=color:#111>Delegate</span><span style=color:#f92672>::*</span><span style=color:#111>NotificationFunc</span><span style=color:#111>)(</span><span style=color:#00a8c8>void</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// object on which the notification function will be invoked
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>typedef</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>tuple</span><span style=color:#f92672>&lt;</span><span style=color:#111>Delegate</span><span style=color:#f92672>*</span><span style=color:#111>,</span> <span style=color:#111>NotificationFunc</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>CallbackType</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// n numbers of listeners can be registerd with an event
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>vector</span><span style=color:#f92672>&lt;</span><span style=color:#111>CallbackType</span><span style=color:#f92672>&gt;</span> <span style=color:#111>delegates</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>Event</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>void</span> <span style=color:#75af00>RegisterDelegate</span><span style=color:#111>(</span><span style=color:#111>Delegate</span><span style=color:#f92672>*</span> <span style=color:#111>delg</span><span style=color:#111>,</span> <span style=color:#111>NotificationFunc</span> <span style=color:#111>f</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>this</span><span style=color:#f92672>-&gt;</span><span style=color:#111>delegates</span><span style=color:#111>.</span><span style=color:#111>push_back</span><span style=color:#111>(</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>make_tuple</span><span style=color:#111>(</span><span style=color:#111>delg</span><span style=color:#111>,</span> <span style=color:#111>f</span><span style=color:#111>));</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>void</span> <span style=color:#75af00>DeRegisterDelegate</span><span style=color:#111>(</span><span style=color:#111>Delegate</span><span style=color:#f92672>*</span> <span style=color:#111>delg</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// some code to un-register the delegate
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>void</span> <span style=color:#75af00>Fire</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// loop over all the delegates and start notifying each of
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#75715e>// the events
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#00a8c8>for</span><span style=color:#111>(</span><span style=color:#00a8c8>auto</span> <span style=color:#111>iter</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>this</span><span style=color:#f92672>-&gt;</span><span style=color:#111>delegates</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span>
+</span></span><span style=display:flex><span>           <span style=color:#111>end</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>this</span><span style=color:#f92672>-&gt;</span><span style=color:#111>delegates</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>           <span style=color:#111>iter</span> <span style=color:#f92672>!=</span> <span style=color:#111>end</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>iter</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>           <span style=color:#75715e>// really unreadable, good if you want to show off                //
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>          <span style=color:#111>(</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>0</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#f92672>*</span><span style=color:#111>iter</span><span style=color:#111>)</span><span style=color:#f92672>-&gt;*</span><span style=color:#111>(</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>tr1</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#ae81ff>1</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#f92672>*</span><span style=color:#111>iter</span><span style=color:#111>)))();</span>
+</span></span><span style=display:flex><span>          <span style=color:#75715e>// here is the equivalent version:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>          <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>          <span style=color:#75715e>// Delegate* delg = std::tr1::get&lt;0&gt;(*iter);
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>          <span style=color:#75715e>// DelegateFunc f= std::tr1::get&lt;1&gt;(*iter);
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>          <span style=color:#75715e>// we have a pointer to member function
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>          <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>          <span style=color:#75715e>// (delg-&gt;*f)();
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>          <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>       <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>MyDelegate</span><span style=color:#f92672>*</span> <span style=color:#111>delg</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>MyDelegate</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>Event</span> <span style=color:#111>evt</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>evt</span><span style=color:#111>.</span><span style=color:#111>RegisterDelegate</span><span style=color:#111>(</span><span style=color:#111>delg</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#111>Delegate</span><span style=color:#f92672>::</span><span style=color:#111>Notify</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>evt</span><span style=color:#111>.</span><span style=color:#111>RegisterDelegate</span><span style=color:#111>(</span><span style=color:#111>delg</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#111>Delegate</span><span style=color:#f92672>::</span><span style=color:#111>Notify2</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>evt</span><span style=color:#111>.</span><span style=color:#111>Fire</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>delete</span> <span style=color:#111>delg</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=summary>Summary</h2><hr><p><code>tuple</code> were introduced to address the maintainability issues with <code>pair</code> they can be used to return multiple values from function can be used to group local data together rather than defining a local struct I hope this will get you started with tuples! happy tuppleing :)</p><div class=blog-tags><a href=https://www.variadic.xyz//tags/c++/>C++</a>&nbsp;
+<a href=https://www.variadic.xyz//tags/c++11/>C++11</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2011/05/10/boostany/ data-toggle=tooltip data-placement=top title=boost::any>&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2011/05/15/calling-convention/ data-toggle=tooltip data-placement=top title="Calling Convention">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://www.variadic.xyz/>a few notes</a></p><p class="credits theme-by text-muted"><a href=https://gohugo.io>Hugo v0.101.0</a> powered &nbsp;&bull;&nbsp; Theme <a href=https://github.com/halogenica/beautifulhugo>Beautiful Hugo</a> adapted from <a href=https://deanattali.com/beautiful-jekyll/>Beautiful Jekyll</a></p></div></div></div></footer><script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js integrity=sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4 crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js integrity=sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js integrity=sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://www.variadic.xyz/js/main.js></script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://www.variadic.xyz/js/load-photoswipe.js></script></body></html>

@@ -1,0 +1,609 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>C++11: auto - a few notes</title><meta name=description content="c++11 type inferencing syntax sugar-> auto"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2011\/05\/04\/auto\/","name":"C 11 auto"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"C\u002b\u002b11: auto","description":"c\u002b\u002b11 type inferencing syntax sugar-\u0026gt; auto","inLanguage":"en","wordCount":1607,"datePublished":"2011-05-04T00:00:00","dateModified":"2011-05-04T00:00:00","image":"https:\/\/www.variadic.xyz\/","keywords":["C\u002b\u002b, C\u002b\u002b11"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2011\/05\/04\/auto\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="C++11: auto"><meta property="og:description" content="c++11 type inferencing syntax sugar-> auto"><meta property="og:url" content="https://www.variadic.xyz/2011/05/04/auto/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="C++11: auto"><meta name=twitter:description content="c++11 type inferencing syntax sugar-> auto"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span></button>
+<a class=navbar-brand href=https://www.variadic.xyz/>a few notes</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Notes href=/>Notes</a></li><li><a title=Archive href=/archive/>Archive</a></li><li><a title=Tags href=/tags/>Tags</a></li><li><a title=About href=/about/>About</a></li><li><a title=Disclaimer href=/disclaimer/>Disclaimer</a></li><li><a title=Books href=/books/>Books</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>C++11: auto</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on May 4, 2011</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><p>C++ does not have any mechanism for querying the type of an expression nor it can initialize a variable without explicitly specifying its type. Specifically to address this limitation two new extensions have been added to C++11:
+<code>decltype</code> – to query the type of an expression
+<code>auto</code> – indicate that the compiler should deduce the type of the variable from its initializer expression. In this post I will only cover <code>auto</code>.</p><p><code>auto</code> keyword was used in C as storage specifier and was supposed to indicate that qualified variable is local. With C++ this became optional.</p><p>For ex:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// localvar is of type int
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>auto</span> <span style=color:#00a8c8>int</span> <span style=color:#111>localvar</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>9</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>This code will compile fine in VS 2008 or C++2003, here storage qualifier <code>auto</code> is neglected as the variable localvar has local scope. With C++11 this has changed. <code>auto</code> has been redefined to indicate automatic type deduction by compiler, so this code fails to compile with error: <code>auto cannot be combined with any other type specifier</code></p><h2 id=auto-101>auto 101</h2><hr><p>Lets look at some of the simpler auto deductions:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">38
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// i is of type int
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span> <span style=color:#111>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>9</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// d is of type double
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span> <span style=color:#111>d</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0.9</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// iptr1 is of type int*
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span> <span style=color:#111>iptr1</span> <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span><span style=color:#111>i</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// iptr2 is of type int*
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span> <span style=color:#00a8c8>auto</span><span style=color:#f92672>*</span> <span style=color:#111>iptr2</span> <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span><span style=color:#111>i</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// iptr3 is of type int*
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span> <span style=color:#00a8c8>auto</span> <span style=color:#111>iptr3</span> <span style=color:#f92672>=</span> <span style=color:#111>iptr2</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span> <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span> <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span> <span style=color:#75715e>// iref1 is of type int&amp;
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span> <span style=color:#00a8c8>auto</span><span style=color:#f92672>&amp;</span> <span style=color:#111>iref1</span> <span style=color:#f92672>=</span> <span style=color:#111>i</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// iref2 is of type const int&amp;
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>const</span> <span style=color:#00a8c8>auto</span><span style=color:#f92672>&amp;</span> <span style=color:#111>iref2</span> <span style=color:#f92672>=</span> <span style=color:#111>iref1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// i2 is of type int
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span> <span style=color:#111>i2</span> <span style=color:#f92672>=</span> <span style=color:#111>iref2</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// c1 is char
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span> <span style=color:#111>c1</span> <span style=color:#f92672>=</span> <span style=color:#960050;background-color:#1e0010>‘</span><span style=color:#111>a</span><span style=color:#960050;background-color:#1e0010>’</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// s1 is const char*
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span> <span style=color:#111>s1</span> <span style=color:#f92672>=</span> <span style=color:#960050;background-color:#1e0010>“</span><span style=color:#00a8c8>auto</span><span style=color:#960050;background-color:#1e0010>”</span><span style=color:#111>;</span>
+</span></span></code></pre></td></tr></table></div></div><p>you can use <code>auto</code> to deduce types of multiple declarations, but the base type of these should be same:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// i1 and i2 are of type int
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// while i3 is of type int&amp;
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span> <span style=color:#111>i1</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#111>i2</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#111>i3</span> <span style=color:#f92672>=</span> <span style=color:#111>i1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// v is of type int* while u is of type int
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// u and v has same base type (int)
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span> <span style=color:#f92672>*</span><span style=color:#111>v</span> <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span><span style=color:#111>i</span><span style=color:#111>,</span> <span style=color:#111>u</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>6</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// all the variables must have same base-type
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// here a is an int, b a float
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// and c is double*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// this line of code fails to compile with error message:
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// &#34;in a declarator list auto must always deduce to same type&#34;
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span> <span style=color:#111>a</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span><span style=color:#111>,</span> <span style=color:#111>b</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>3.f</span> <span style=color:#111>,</span> <span style=color:#f92672>*</span> <span style=color:#111>c</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#00a8c8>double</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span></code></pre></td></tr></table></div></div><p>How about initializing array?
+Please see this <a href=http://groups.google.com/group/comp.lang.c++.moderated/browse_thread/thread/e912927e704e1960/d0c2beb388d1b204#d0c2beb388d1b204>link</a> why type can’t be deduced in case of an array.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// cannot deduce an array of elements with auto
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// fails to compile with error message:
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// &#34;the element type of an array cannot be a type that contains &#39;auto&#39;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span> <span style=color:#111>arr1</span><span style=color:#111>[]</span> <span style=color:#f92672>=</span> <span style=color:#111>{</span><span style=color:#d88200>&#39;a&#39;</span><span style=color:#111>,</span><span style=color:#d88200>&#39;b&#39;</span><span style=color:#111>,</span><span style=color:#d88200>&#39;c&#39;</span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// too many initializers auto arr2 = {&#39;a&#39;,&#39;b&#39;,&#39;c&#39;};
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// cannot deduce type for auto* from char
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// cannot convert from char to int*
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>auto</span><span style=color:#f92672>*</span> <span style=color:#111>arr3</span> <span style=color:#f92672>=</span> <span style=color:#111>{</span><span style=color:#d88200>&#39;a&#39;</span><span style=color:#111>,</span><span style=color:#d88200>&#39;b&#39;</span><span style=color:#111>,</span><span style=color:#d88200>&#39;c&#39;</span><span style=color:#111>};</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>auto</code> can deduce the types from return types of functions, after all it is an expression:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>double</span> <span style=color:#75af00>SomeFunction</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0.0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// retval is of type double
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>auto</span> <span style=color:#111>retval</span> <span style=color:#f92672>=</span> <span style=color:#111>SomeFunction</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>How does auto behaves with implicit conversion?</p><p>Consider a <code>class AutoDemo</code>, its instance can be readily converted to <code>double</code>, but during deduction as in first statement in <code>main</code>, <code>autoVar1</code> is deduced to be of type <code>AutoDemo</code>, rather than <code>double</code>. But if you want it to be <code>double</code> then you will have to explicitly convert it to <code>double</code> as with second statement.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>AutoDemo</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>AutoDemo</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>operator</span> <span style=color:#75af00>double</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>8.0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// autoVar1 is of type AutoDemo
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>auto</span> <span style=color:#111>autoVar1</span> <span style=color:#f92672>=</span> <span style=color:#111>AutoDemo</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// autoVar2 is of type double
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>auto</span> <span style=color:#111>autoVar2</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>static_cast</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>double</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>autoVar1</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>one more example of type deduction with operators: Here <code>Vector</code> class defines a <code>operator*</code> to multiply two vectors and returns <code>double</code>, again with <code>auto</code> compiler is smart enough to figure out that the expression will result in <code>double</code></p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>Vector</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>*</span><span style=color:#111>(</span><span style=color:#00a8c8>const</span> <span style=color:#111>Vector</span><span style=color:#f92672>&amp;</span> <span style=color:#111>other</span><span style=color:#111>)</span> <span style=color:#00a8c8>const</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0.0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>Vector</span> <span style=color:#111>v1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>Vector</span> <span style=color:#111>v2</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// dotProd is of type double
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>auto</span> <span style=color:#111>dotProd</span> <span style=color:#f92672>=</span> <span style=color:#111>v1</span> <span style=color:#f92672>*</span> <span style=color:#111>v2</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>So far so good how about references with classes in a hierarchy?
+I have two classes <code>A</code> & <code>B</code>, where <code>B</code> publicly derives from <code>A</code> and is polymorphic.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">49
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">50
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">51
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">52
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">53
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">54
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">55
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">56
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">57
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">58
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">59
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">60
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">61
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">62
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">63
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>class</span> <span style=color:#75af00>A</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>int</span> <span style=color:#111>a</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>A</span><span style=color:#111>()</span> <span style=color:#f92672>:</span> <span style=color:#111>a</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>A</span><span style=color:#111>(</span><span style=color:#00a8c8>const</span> <span style=color:#111>A</span><span style=color:#f92672>&amp;</span> <span style=color:#111>other</span><span style=color:#111>)</span> <span style=color:#f92672>:</span> <span style=color:#111>a</span><span style=color:#111>(</span><span style=color:#111>other</span><span style=color:#111>.</span><span style=color:#111>a</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>virtual</span> <span style=color:#f92672>~</span><span style=color:#111>A</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>void</span> <span style=color:#75af00>Print</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#d88200>&#34;Calling from A::Print&#34;</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>class</span> <span style=color:#75af00>B</span> <span style=color:#f92672>:</span> <span style=color:#00a8c8>public</span> <span style=color:#111>A</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>d</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>B</span><span style=color:#111>()</span> <span style=color:#f92672>:</span> <span style=color:#111>d</span><span style=color:#111>(</span><span style=color:#ae81ff>0.0</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>B</span><span style=color:#111>(</span><span style=color:#00a8c8>const</span> <span style=color:#111>B</span><span style=color:#f92672>&amp;</span> <span style=color:#111>other</span><span style=color:#111>)</span> <span style=color:#f92672>:</span> <span style=color:#111>d</span><span style=color:#111>(</span><span style=color:#111>other</span><span style=color:#111>.</span><span style=color:#111>d</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>virtual</span> <span style=color:#f92672>~</span><span style=color:#111>B</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>void</span> <span style=color:#75af00>Print</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#d88200>&#34;Calling from B::Print&#34;</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>A</span><span style=color:#f92672>*</span> <span style=color:#111>bptr</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>B</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// a is of type A
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// no polymorphic behaviour is preserved
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// object-slicing, as it happens today
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>auto</span> <span style=color:#111>a</span> <span style=color:#f92672>=</span> <span style=color:#f92672>*</span><span style=color:#111>bptr</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>a</span><span style=color:#111>.</span><span style=color:#111>Print</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>bptr</span><span style=color:#f92672>-&gt;</span><span style=color:#111>Print</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>what would be the output of the two print statements?
+In case of pointer it would be polymorphic, and <code>Print</code> function on <code>class B</code> would be invoked, however in case of <code>a</code>, this is not polymorphic. Why?
+<code>bptr</code> has been defined as <code>A</code>, and since C++ is a statically typed language, <code>bptr</code> will be converted to <code>A</code> rather than <code>B</code>. This complies with existing behaviour, otherwise knows as object slicing.
+Had it been reference, it would have been polymorphic</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>auto</span><span style=color:#f92672>&amp;</span> <span style=color:#111>b</span> <span style=color:#f92672>=</span> <span style=color:#f92672>*</span><span style=color:#111>bptr</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>b</span><span style=color:#111>.</span><span style=color:#111>Print</span><span style=color:#111>();</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=using-auto>Using auto</h2><hr><p>Consider the simplest example, looping over a <code>vector</code> and printing it’s contents to console:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;vector&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span> <span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>vector</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span> <span style=color:#111>vec</span><span style=color:#111>(</span><span style=color:#ae81ff>10</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// pre-auto this would have looked like:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>for</span><span style=color:#111>(</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>vector</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;::</span><span style=color:#111>iterator</span> <span style=color:#111>iter</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span> <span style=color:#111>endIter</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>iter</span> <span style=color:#f92672>!=</span> <span style=color:#111>endIter</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>iter</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#f92672>*</span><span style=color:#111>iter</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// with auto:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>for</span><span style=color:#111>(</span> <span style=color:#00a8c8>auto</span> <span style=color:#111>iter</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span> <span style=color:#111>end</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>iter</span> <span style=color:#f92672>!=</span> <span style=color:#111>end</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>iter</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#f92672>*</span><span style=color:#111>iter</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>same example using functors, lambda and comparing all versions:
+(<a href=/2011/10/12/c11-lambda-having-fun-with-brackets/>here for more on C++11 lambda functions</a>)</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">49
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">50
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">51
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">52
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">53
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">54
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">55
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">56
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">57
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">58
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">59
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">60
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">61
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">62
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">63
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">64
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">65
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">66
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">67
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">68
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;vector&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;algorithm&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>struct</span> <span style=color:#75af00>PrintFunction</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>void</span> <span style=color:#75af00>operator</span><span style=color:#111>()(</span><span style=color:#00a8c8>int</span> <span style=color:#111>val</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>val</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>vector</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span> <span style=color:#111>vec</span><span style=color:#111>(</span><span style=color:#ae81ff>10</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// pre-auto this would have looked like:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>for</span><span style=color:#111>(</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>vector</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;::</span><span style=color:#111>iterator</span> <span style=color:#111>iter</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span> <span style=color:#111>endIter</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>iter</span> <span style=color:#f92672>!=</span> <span style=color:#111>endIter</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>iter</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#f92672>*</span><span style=color:#111>iter</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// with auto:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>for</span><span style=color:#111>(</span> <span style=color:#00a8c8>auto</span> <span style=color:#111>iter</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span> <span style=color:#111>end</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>iter</span> <span style=color:#f92672>!=</span> <span style=color:#111>end</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>iter</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#f92672>*</span><span style=color:#111>iter</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// with functor with hand-written for loop:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>PrintFunction</span> <span style=color:#111>printFunction</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>for</span><span style=color:#111>(</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>vector</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;::</span><span style=color:#111>iterator</span> <span style=color:#111>iter</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span> <span style=color:#111>endIter</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>iter</span> <span style=color:#f92672>!=</span> <span style=color:#111>endIter</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>iter</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>printFunction</span><span style=color:#111>(</span><span style=color:#f92672>*</span><span style=color:#111>iter</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// using functor with for_each algorithm
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>for_each</span><span style=color:#111>(</span><span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>(),</span> <span style=color:#111>printFunction</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// using lambda:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// type of printFunctionLambda is --&gt; void printFunctionLambda(int)
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>auto</span> <span style=color:#111>printFunctionLambda</span> <span style=color:#f92672>=</span> <span style=color:#111>[](</span><span style=color:#00a8c8>int</span> <span style=color:#111>val</span><span style=color:#111>){</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>val</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;};</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// with lambda with hand-written for loop:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>for</span><span style=color:#111>(</span> <span style=color:#00a8c8>auto</span> <span style=color:#111>iter</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span> <span style=color:#111>endIter</span> <span style=color:#f92672>=</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>iter</span> <span style=color:#f92672>!=</span> <span style=color:#111>endIter</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>iter</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>printFunctionLambda</span><span style=color:#111>(</span><span style=color:#f92672>*</span><span style=color:#111>iter</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>// using functor with for_each algorithm:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>for_each</span><span style=color:#111>(</span><span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>(),</span> <span style=color:#111>printFunctionLambda</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Thus <code>auto</code> is syntactic sugar, but as sugar it is sweet. It will help to write much more readable code.
+I hope this post will be good to get you started with auto. In future we will be using <code>auto</code> extensively. All the code can be tried out in VS 2010 SP1.</p><div class=blog-tags><a href=https://www.variadic.xyz//tags/c++/>C++</a>&nbsp;
+<a href=https://www.variadic.xyz//tags/c++11/>C++11</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2011/05/02/c-templates-an-introduction/ data-toggle=tooltip data-placement=top title="C++ Templates – An Introduction">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2011/05/07/template-function-to-determine-size-of-an-array/ data-toggle=tooltip data-placement=top title="template function to determine size of an array">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://www.variadic.xyz/>a few notes</a></p><p class="credits theme-by text-muted"><a href=https://gohugo.io>Hugo v0.101.0</a> powered &nbsp;&bull;&nbsp; Theme <a href=https://github.com/halogenica/beautifulhugo>Beautiful Hugo</a> adapted from <a href=https://deanattali.com/beautiful-jekyll/>Beautiful Jekyll</a></p></div></div></div></footer><script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js integrity=sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4 crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js integrity=sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js integrity=sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://www.variadic.xyz/js/main.js></script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://www.variadic.xyz/js/load-photoswipe.js></script></body></html>

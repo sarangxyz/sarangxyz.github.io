@@ -1,0 +1,370 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>static_assert - a few notes</title><meta name=description content="compile time assertions in c++11"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2011\/05\/02\/static_assert\/","name":"Static assert"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"static_assert","description":"compile time assertions in c\u002b\u002b11","inLanguage":"en","wordCount":1246,"datePublished":"2011-05-02T00:00:00","dateModified":"2011-05-02T00:00:00","image":"https:\/\/www.variadic.xyz\/","keywords":["C\u002b\u002b, C\u002b\u002b11"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2011\/05\/02\/static_assert\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="static_assert"><meta property="og:description" content="compile time assertions in c++11"><meta property="og:url" content="https://www.variadic.xyz/2011/05/02/static_assert/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="static_assert"><meta name=twitter:description content="compile time assertions in c++11"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span></button>
+<a class=navbar-brand href=https://www.variadic.xyz/>a few notes</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Notes href=/>Notes</a></li><li><a title=Archive href=/archive/>Archive</a></li><li><a title=Tags href=/tags/>Tags</a></li><li><a title=About href=/about/>About</a></li><li><a title=Disclaimer href=/disclaimer/>Disclaimer</a></li><li><a title=Books href=/books/>Books</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>static_assert</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on May 2, 2011</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><h2 id=assertions>Assertions</h2><p>In computer programming an assertion is a <a href=http://en.wikipedia.org/wiki/First-order_logic>predicate</a> placed in a program to indicate that the developer thinks that the predicate is always true at that place.
+For example:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>9</span><span style=color:#111>;</span> 
+</span></span></code></pre></td></tr></table></div></div><p><code>x > 8</code> always evaluates to <code>true</code>, here <code>x > 8</code> is a <em>predicate</em> that will evaluate the condition and return either <code>true</code> or <code>false</code>.
+Ok, so now why do we want to assert?
+Many assertion implementations will also halt the program&rsquo;s execution — this is useful, since if the program continued to run after an assertion violation occurred it might corrupt its state and make the cause of the problem more difficult to locate. Using the information provided by the assertion failure (such as the location of the failure and perhaps a <a href=http://en.wikipedia.org/wiki/Stack_trace>stack trace</a>, or even the full program state if the environment supports <a href=http://en.wikipedia.org/wiki/Core_dump>core dumps</a> or if the program is running in a <a href=http://en.wikipedia.org/wiki/Debugger>debugger</a>), the programmer can usually fix the problem. Thus assertions provide a very powerful tool in debugging.
+Programmers can use assertions to specify or enforce the pre-conditions and post-conditions of states under which the programmer expects the code to execute. This is very useful while developing application/code as it helps to find out defects/bugs before the application is shipped.
+This was about runtime assertion, where the predicate is evaluated based on the runtime state of application. What about library developers that want to ensure that their libraries are used with correct type?</p><h2 id=need-for-static_assert>Need for <code>static_assert</code></h2><p>Well, library developers can write out the boilerplate code for each type that they expect and ship out the code, this way they can ensure there are no surprises. But for supporting new types, new APIs will have to be added. This can become big pain. Second option is to use C++ Templates, write once use everywhere. This everywhere can soon be quite painful. With templates the function/class will be generated for the specified type, even if you don’t want them to be generated.</p><p>For example:
+I have my own class hierarchy and have smart pointers that do memory management from a managed memory region. The memory is allocated and deallocated from this region only for types in my hierarchy, so how do I constrain the creation of smart pointers so that any other class out of hierarchy will not work with my smart pointers, rather than corrupt memory at runtime.</p><p>There are several ways:
+- Document and blame users if they screw up
+- Enforce requirement during code-reviews (works internally only)
+- Fail compilation of such code</p><p>First two options are difficult to practice, third seems to be an interesting choice.
+Ok, so here is my class hierarchy:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>A</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>B</span> <span style=color:#f92672>:</span> <span style=color:#00a8c8>public</span> <span style=color:#111>A</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>C</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#111>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>And here is my implementation of SmartPointer, this works with classes deriving from A only.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>template</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>class</span> <span style=color:#75af00>T</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>SmartPointer</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>T</span><span style=color:#f92672>*</span> <span style=color:#111>ptr</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>SmartPointer</span><span style=color:#111>()</span> <span style=color:#f92672>:</span> <span style=color:#111>ptr</span><span style=color:#111>(</span><span style=color:#111>NULL</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#111>SmartPointer</span><span style=color:#111>(</span><span style=color:#111>T</span><span style=color:#f92672>*</span> <span style=color:#111>pointer</span><span style=color:#111>)</span> <span style=color:#f92672>:</span> <span style=color:#111>ptr</span><span style=color:#111>(</span><span style=color:#111>pointer</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#f92672>~</span><span style=color:#111>SmartPointer</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// special deletion logic
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>With these implementations in place, I can write code like this and it compiles and links, but it will corrupt memory at run time.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>SmartPointer</span><span style=color:#f92672>&lt;</span><span style=color:#111>C</span><span style=color:#f92672>&gt;</span> <span style=color:#111>cp</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>The problem is templates are used as code generation mechanism but constraints are missing for types and that’s where <code>static_assert</code> comes into picture.
+So if I add one more line to my SmartPointer class to enforce hierarchical constraint.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>template</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>class</span> <span style=color:#75af00>T</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>SmartPointer</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>T</span><span style=color:#f92672>*</span> <span style=color:#111>ptr</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>static_assert</span><span style=color:#111>(</span><span style=color:#f92672>::</span><span style=color:#111>boost</span><span style=color:#f92672>::</span><span style=color:#111>is_base_of</span><span style=color:#f92672>&amp;</span><span style=color:#111>lt</span><span style=color:#111>;</span><span style=color:#111>A</span><span style=color:#111>,</span> <span style=color:#111>T</span><span style=color:#f92672>&amp;</span><span style=color:#111>gt</span><span style=color:#111>;</span><span style=color:#f92672>::</span><span style=color:#111>value</span><span style=color:#111>,</span>
+</span></span><span style=display:flex><span>    <span style=color:#d88200>&#34;The parametric type must derive from A&#34;</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>SmartPointer</span><span style=color:#111>()</span> <span style=color:#f92672>:</span> <span style=color:#111>ptr</span><span style=color:#111>(</span><span style=color:#111>NULL</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#111>SmartPointer</span><span style=color:#111>(</span><span style=color:#111>T</span><span style=color:#f92672>*</span> <span style=color:#111>pointer</span><span style=color:#111>)</span> <span style=color:#f92672>:</span> <span style=color:#111>ptr</span><span style=color:#111>(</span><span style=color:#111>pointer</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#f92672>~</span><span style=color:#111>SmartPointer</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// special deletion logic
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>With this definition in place, above code fails to compile with error message:
+<img src=/wp-content/uploads/2011/05/image_thumb.png alt="alt text"></p><p>One more application of <code>static_assert</code> can be to create stack allocated array of elements. This is very similar to creating stack allocated array of several elements. But we want to constrain how much memory this array can consume. Stack, typically, has 1 MB memory to start with and can have max of 2MB. Stack memory is very fast and very premium for high performance softwares.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 49
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 50
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 51
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 52
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 53
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 54
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 55
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 56
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 57
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 58
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 59
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 60
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 61
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 62
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 63
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 64
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 65
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 66
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 67
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 68
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 69
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 70
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 71
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 72
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 73
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 74
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 75
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 76
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 77
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 78
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 79
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 80
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 81
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 82
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 83
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 84
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 85
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 86
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 87
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 88
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 89
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 90
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 91
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 92
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 93
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 94
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 95
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 96
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 97
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 98
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 99
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">100
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">101
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">102
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">103
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">104
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">105
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">106
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>template</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>typename</span> <span style=color:#111>T</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>numElems</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>StackArray</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  just declared privately so cannot be invoked to create
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  an object on heap, also not implented so linking
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  will fail
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>void</span> <span style=color:#f92672>*</span><span style=color:#00a8c8>operator</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>size_t</span> <span style=color:#111>size</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>void</span> <span style=color:#00a8c8>operator</span> <span style=color:#75af00>delete</span><span style=color:#111>(</span><span style=color:#00a8c8>void</span> <span style=color:#f92672>*</span><span style=color:#111>p</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>void</span> <span style=color:#f92672>*</span><span style=color:#00a8c8>operator</span> <span style=color:#00a8c8>new</span><span style=color:#111>[](</span><span style=color:#111>size_t</span> <span style=color:#111>size</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>void</span> <span style=color:#00a8c8>operator</span> <span style=color:#00a8c8>delete</span><span style=color:#111>[](</span><span style=color:#00a8c8>void</span> <span style=color:#f92672>*</span><span style=color:#111>p</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  create an array of NumElems
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>T</span> <span style=color:#111>arr</span><span style=color:#111>[</span><span style=color:#111>NumElems</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  enforce that total memory consumed by this array does not exceed 400 bytes
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>static_assert</span><span style=color:#111>(</span> <span style=color:#00a8c8>sizeof</span><span style=color:#111>(</span><span style=color:#111>T</span><span style=color:#111>)</span><span style=color:#f92672>*</span><span style=color:#111>NumElems</span> <span style=color:#f92672>&amp;</span><span style=color:#111>lt</span><span style=color:#111>;</span> <span style=color:#ae81ff>401</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;StackArray cannot consume more than 400 bytes of memory&#34;</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>void</span> <span style=color:#75af00>assign</span><span style=color:#111>(</span><span style=color:#00a8c8>const</span> <span style=color:#111>StackArray</span><span style=color:#f92672>&amp;</span> <span style=color:#111>other</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>for</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>idx</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>idx</span> <span style=color:#f92672>&amp;</span><span style=color:#111>lt</span><span style=color:#111>;</span> <span style=color:#111>NumElems</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>idx</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>arr</span><span style=color:#111>[</span><span style=color:#111>idx</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>other</span><span style=color:#111>.</span><span style=color:#111>arr</span><span style=color:#111>[</span><span style=color:#111>idx</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>StackArray</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>for</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>idx</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>idx</span> <span style=color:#f92672>&amp;</span><span style=color:#111>lt</span><span style=color:#111>;</span> <span style=color:#111>NumElems</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>idx</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>arr</span><span style=color:#111>[</span><span style=color:#111>idx</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>T</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#111>StackArray</span><span style=color:#111>(</span><span style=color:#00a8c8>const</span> <span style=color:#111>StackArray</span><span style=color:#f92672>&amp;</span> <span style=color:#111>other</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>this</span><span style=color:#f92672>-&gt;</span><span style=color:#111>assign</span><span style=color:#111>(</span><span style=color:#111>other</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#111>StackArray</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>=</span><span style=color:#111>(</span><span style=color:#00a8c8>const</span> <span style=color:#111>StackArray</span><span style=color:#f92672>&amp;</span> <span style=color:#111>other</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span><span style=color:#111>(</span> <span style=color:#00a8c8>this</span> <span style=color:#f92672>!=</span> <span style=color:#f92672>&amp;</span><span style=color:#111>other</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>this</span><span style=color:#f92672>-&gt;</span><span style=color:#111>assign</span><span style=color:#111>(</span><span style=color:#111>other</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#f92672>*</span><span style=color:#00a8c8>this</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  indexing operator
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>T</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#111>[](</span><span style=color:#00a8c8>int</span> <span style=color:#111>idx</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>arr</span><span style=color:#111>[</span><span style=color:#111>idx</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>const</span> <span style=color:#111>T</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#111>[](</span><span style=color:#00a8c8>int</span> <span style=color:#111>idx</span><span style=color:#111>)</span> <span style=color:#00a8c8>const</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>arr</span><span style=color:#111>[</span><span style=color:#111>idx</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  begin and end so that this array can be used with STL algorithms
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  this will qualify to be random access iterator
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>T</span><span style=color:#f92672>*</span> <span style=color:#75af00>begin</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>arr</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#111>T</span><span style=color:#f92672>*</span> <span style=color:#75af00>end</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>arr</span><span style=color:#f92672>+</span><span style=color:#111>NumElems</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//  size of big is 200 bytes
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#00a8c8>struct</span> <span style=color:#75af00>Big</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>double</span> <span style=color:#111>arr</span><span style=color:#111>[</span><span style=color:#ae81ff>25</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  memory consumed is 20 bytes
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>StackArray</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#111>,</span><span style=color:#ae81ff>5</span><span style=color:#f92672>&gt;</span> <span style=color:#111>arr</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>for</span><span style=color:#111>(</span> <span style=color:#00a8c8>auto</span> <span style=color:#111>iter</span> <span style=color:#f92672>=</span> <span style=color:#111>arr</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>();</span> <span style=color:#111>iter</span> <span style=color:#f92672>!=</span> <span style=color:#111>arr</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>();</span> <span style=color:#f92672>++</span><span style=color:#111>iter</span> <span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#f92672>*</span><span style=color:#111>iter</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  this compiles fine as the total memory consumed by this array is
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  400 bytes
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>StackArray</span><span style=color:#f92672>&lt;</span><span style=color:#111>Big</span><span style=color:#111>,</span><span style=color:#ae81ff>2</span><span style=color:#f92672>&gt;</span> <span style=color:#111>arr2</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  fails with compilation error
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  StackArray cannot consume more than 400 bytes of memory
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>StackArray</span><span style=color:#f92672>&lt;</span><span style=color:#111>Big</span><span style=color:#111>,</span><span style=color:#ae81ff>3</span><span style=color:#f92672>&gt;</span> <span style=color:#111>arr3</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=static_assert>static_assert</h2><p><code>static_assert(constant_expression, string_literal);</code>
+where <code>constant_expression</code> is an integral constant that can be converted to boolean and <code>string_literal</code> is some sensible message to be displayed when <code>constant_expression</code> evaluates to <code>0</code> or <code>false</code>.
+In our case:</p><pre tabindex=0><code>static_assert(::boost::is_base_of&lt;A, T&gt;::value, &#34;The parametric type must derive from A&#34;);
+</code></pre><p>the <code>constant_expression</code> is <code>::boost::is_base_of&lt;A, T>::value</code>. It’s one of the <a href=http://www.boost.org/doc/libs/1_46_0/libs/type_traits/doc/html/boost_typetraits/reference/is_base_of.html>type_traits</a> available in <a href=http://www.boost.org>boost</a> library. <code>is_base_of&lt;A,T>::value</code> evaluates to <code>true</code> only if the <code>T</code> publicly derives from <code>A</code>.
+Well this is just one of the scenarios where <code>static_assert</code> can be used. <code>static_assert</code> can be helpful to convert runtime time errors to compilation errors.</p><p>I hope this post will prove useful for readers to get started with this C++11 feature.</p><div class=blog-tags><a href=https://www.variadic.xyz//tags/c++/>C++</a>&nbsp;
+<a href=https://www.variadic.xyz//tags/c++11/>C++11</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2011/04/22/stack-for-recent-applications/ data-toggle=tooltip data-placement=top title="Stack for recent applications">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2011/05/02/c-templates-an-introduction/ data-toggle=tooltip data-placement=top title="C++ Templates – An Introduction">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://www.variadic.xyz/>a few notes</a></p><p class="credits theme-by text-muted"><a href=https://gohugo.io>Hugo v0.101.0</a> powered &nbsp;&bull;&nbsp; Theme <a href=https://github.com/halogenica/beautifulhugo>Beautiful Hugo</a> adapted from <a href=https://deanattali.com/beautiful-jekyll/>Beautiful Jekyll</a></p></div></div></div></footer><script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js integrity=sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4 crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js integrity=sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js integrity=sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://www.variadic.xyz/js/main.js></script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://www.variadic.xyz/js/load-photoswipe.js></script></body></html>

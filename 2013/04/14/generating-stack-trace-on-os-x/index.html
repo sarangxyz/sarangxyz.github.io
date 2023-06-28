@@ -1,0 +1,255 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>generating stack trace on OS X - a few notes</title><meta name=description content="notes on how to generate stack traces with symbols on Mac OS X"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2013\/04\/14\/generating-stack-trace-on-os-x\/","name":"Generating stack trace on os x"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"generating stack trace on OS X","description":"notes on how to generate stack traces with symbols on Mac OS X","inLanguage":"en","wordCount":476,"datePublished":"2013-04-14T00:00:00","dateModified":"2013-04-14T00:00:00","image":"https:\/\/www.variadic.xyz\/","keywords":["macos"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2013\/04\/14\/generating-stack-trace-on-os-x\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="generating stack trace on OS X"><meta property="og:description" content="notes on how to generate stack traces with symbols on Mac OS X"><meta property="og:url" content="https://www.variadic.xyz/2013/04/14/generating-stack-trace-on-os-x/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="generating stack trace on OS X"><meta name=twitter:description content="notes on how to generate stack traces with symbols on Mac OS X"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span></button>
+<a class=navbar-brand href=https://www.variadic.xyz/>a few notes</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Notes href=/>Notes</a></li><li><a title=Archive href=/archive/>Archive</a></li><li><a title=Tags href=/tags/>Tags</a></li><li><a title=About href=/about/>About</a></li><li><a title=Disclaimer href=/disclaimer/>Disclaimer</a></li><li><a title=Books href=/books/>Books</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>generating stack trace on OS X</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on April 14, 2013</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 49
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 50
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 51
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 52
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 53
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 54
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 55
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 56
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 57
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 58
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 59
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 60
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 61
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 62
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 63
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 64
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 65
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 66
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 67
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 68
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 69
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 70
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 71
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 72
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 73
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 74
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 75
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 76
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 77
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 78
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 79
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 80
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 81
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 82
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 83
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 84
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 85
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 86
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 87
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 88
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 89
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 90
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 91
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 92
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 93
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 94
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 95
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 96
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 97
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 98
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 99
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">100
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">101
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">102
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;execinfo.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;cxxabi.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;vector&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;algorithm&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;memory&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>StackTraceGenerator</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//  this is a pure utils class
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  cannot be instantiated
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#111>StackTraceGenerator</span><span style=color:#111>()</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>delete</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>StackTraceGenerator</span><span style=color:#111>(</span><span style=color:#00a8c8>const</span> <span style=color:#111>StackTraceGenerator</span><span style=color:#f92672>&amp;</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>delete</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>StackTraceGenerator</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>=</span><span style=color:#111>(</span><span style=color:#00a8c8>const</span> <span style=color:#111>StackTraceGenerator</span><span style=color:#f92672>&amp;</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>delete</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>~</span><span style=color:#111>StackTraceGenerator</span><span style=color:#111>()</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>delete</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>static</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>vector</span><span style=color:#f92672>&lt;</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>string</span><span style=color:#f92672>&gt;</span> <span style=color:#111>GetTrace</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>//  record stack trace upto 128 frames
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#00a8c8>int</span> <span style=color:#111>callstack</span><span style=color:#111>[</span><span style=color:#ae81ff>128</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>{};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// collect stack frames
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#00a8c8>int</span>  <span style=color:#111>frames</span> <span style=color:#f92672>=</span> <span style=color:#111>backtrace</span><span style=color:#111>((</span><span style=color:#00a8c8>void</span><span style=color:#f92672>**</span><span style=color:#111>)</span> <span style=color:#111>callstack</span><span style=color:#111>,</span> <span style=color:#ae81ff>128</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// get the human-readable symbols (mangled)
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#00a8c8>char</span><span style=color:#f92672>**</span> <span style=color:#111>strs</span> <span style=color:#f92672>=</span> <span style=color:#111>backtrace_symbols</span><span style=color:#111>((</span><span style=color:#00a8c8>void</span><span style=color:#f92672>**</span><span style=color:#111>)</span> <span style=color:#111>callstack</span><span style=color:#111>,</span> <span style=color:#111>frames</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>vecto</span><span style=color:#f92672>&lt;</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>string</span><span style=color:#f92672>&gt;</span><span style=color:#111>r</span> <span style=color:#111>stackFrames</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>stackFrames</span><span style=color:#111>.</span><span style=color:#111>reserve</span><span style=color:#111>(</span><span style=color:#111>frames</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#111>frames</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>i</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>char</span> <span style=color:#111>functionSymbol</span><span style=color:#111>[</span><span style=color:#ae81ff>1024</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>{};</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>char</span> <span style=color:#111>moduleName</span><span style=color:#111>[</span><span style=color:#ae81ff>1024</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>{};</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>int</span>  <span style=color:#111>offset</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>char</span> <span style=color:#111>addr</span><span style=color:#111>[</span><span style=color:#ae81ff>48</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>{};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#75715e>/*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             Typically this is how the backtrace looks like:
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             0   &lt;app/lib-name&gt;     0x0000000100000e98 _Z5tracev + 72
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             1   &lt;app/lib-name&gt;     0x00000001000015c1 _ZNK7functorclEv + 17
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             2   &lt;app/lib-name&gt;     0x0000000100000f71 _Z3fn0v + 17
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             3   &lt;app/lib-name&gt;     0x0000000100000f89 _Z3fn1v + 9
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             4   &lt;app/lib-name&gt;     0x0000000100000f99 _Z3fn2v + 9
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             5   &lt;app/lib-name&gt;     0x0000000100000fa9 _Z3fn3v + 9
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             6   &lt;app/lib-name&gt;     0x0000000100000fb9 _Z3fn4v + 9
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             7   &lt;app/lib-name&gt;     0x0000000100000fc9 _Z3fn5v + 9
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             8   &lt;app/lib-name&gt;     0x0000000100000fd9 _Z3fn6v + 9
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             9   &lt;app/lib-name&gt;     0x0000000100001018 main + 56
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             10  libdyld.dylib      0x00007fff91b647e1 start + 0
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>             */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#75715e>// split the string, take out chunks out of stack trace
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            <span style=color:#75715e>// we are primarily interested in module, function and address
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            <span style=color:#111>sscanf</span><span style=color:#111>(</span><span style=color:#111>strs</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>],</span> <span style=color:#d88200>&#34;%*s %s %s %s %*s %d&#34;</span><span style=color:#111>,</span>
+</span></span><span style=display:flex><span>                   <span style=color:#f92672>&amp;</span><span style=color:#111>moduleName</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#111>addr</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#111>functionSymbol</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#111>offset</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>int</span>   <span style=color:#111>validCppName</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#75715e>//  if this is a C++ library, symbol will be demangled
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            <span style=color:#75715e>//  on success function returns 0
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            <span style=color:#00a8c8>char</span><span style=color:#f92672>*</span> <span style=color:#111>functionName</span> <span style=color:#f92672>=</span> <span style=color:#111>abi</span><span style=color:#f92672>::</span><span style=color:#111>__cxa_demangle</span><span style=color:#111>(</span><span style=color:#111>functionSymbol</span><span style=color:#111>,</span>
+</span></span><span style=display:flex><span>                                                     <span style=color:#111>NULL</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#111>validCppName</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>char</span> <span style=color:#111>stackFrame</span><span style=color:#111>[</span><span style=color:#ae81ff>4096</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>{};</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>validCppName</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span> <span style=color:#75715e>// success
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>sprintf</span><span style=color:#111>(</span><span style=color:#111>stackFrame</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;(%s)</span><span style=color:#8045ff>\t</span><span style=color:#d88200>0x%s — %s + %d&#34;</span><span style=color:#111>,</span>
+</span></span><span style=display:flex><span>                        <span style=color:#111>moduleName</span><span style=color:#111>,</span> <span style=color:#111>addr</span><span style=color:#111>,</span> <span style=color:#111>functionName</span><span style=color:#111>,</span> <span style=color:#111>offset</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>else</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#75715e>//  in the above traceback (in comments) last entry is not
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>                <span style=color:#75715e>//  from C++ binary, last frame, libdyld.dylib, is printed
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>                <span style=color:#75715e>//  from here
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>                <span style=color:#111>sprintf</span><span style=color:#111>(</span><span style=color:#111>stackFrame</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;(%s)</span><span style=color:#8045ff>\t</span><span style=color:#d88200>0x%s — %s + %d&#34;</span><span style=color:#111>,</span>
+</span></span><span style=display:flex><span>                        <span style=color:#111>moduleName</span><span style=color:#111>,</span> <span style=color:#111>addr</span><span style=color:#111>,</span> <span style=color:#111>functionName</span><span style=color:#111>,</span> <span style=color:#111>offset</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>functionName</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>free</span><span style=color:#111>(</span><span style=color:#111>functionName</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>string</span> <span style=color:#111>frameStr</span><span style=color:#111>(</span><span style=color:#111>stackFrame</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>stackFrames</span><span style=color:#111>.</span><span style=color:#111>push_back</span><span style=color:#111>(</span><span style=color:#111>frameStr</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>free</span><span style=color:#111>(</span><span style=color:#111>strs</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>stackFrames</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>struct</span> <span style=color:#75af00>StackTracePrinter</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>void</span> <span style=color:#75af00>operator</span><span style=color:#111>()()</span> <span style=color:#00a8c8>const</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>auto</span> <span style=color:#111>frames</span> <span style=color:#f92672>=</span> <span style=color:#111>StackTraceGenerator</span><span style=color:#f92672>::</span><span style=color:#111>GetTrace</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>for_each</span><span style=color:#111>(</span><span style=color:#111>frames</span><span style=color:#111>.</span><span style=color:#111>cbegin</span><span style=color:#111>(),</span> <span style=color:#111>frames</span><span style=color:#111>.</span><span style=color:#111>cend</span><span style=color:#111>(),</span>
+</span></span><span style=display:flex><span>                      <span style=color:#111>[](</span><span style=color:#00a8c8>const</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>string</span><span style=color:#f92672>&amp;</span> <span style=color:#111>frame</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>                        <span style=color:#111>{</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>frame</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;});</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>void</span> <span style=color:#75af00>fn0</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>StackTracePrinter</span> <span style=color:#111>stPrinter</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>stPrinter</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>And the output is:</p><p>stack-trace</p><div class=blog-tags><a href=https://www.variadic.xyz//tags/macos/>macos</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2013/02/18/waiting-for-background-operation-to-complete/ data-toggle=tooltip data-placement=top title="Waiting for Background operation to complete">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2013/04/24/little-endian/ data-toggle=tooltip data-placement=top title=little-endian>Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://www.variadic.xyz/>a few notes</a></p><p class="credits theme-by text-muted"><a href=https://gohugo.io>Hugo v0.101.0</a> powered &nbsp;&bull;&nbsp; Theme <a href=https://github.com/halogenica/beautifulhugo>Beautiful Hugo</a> adapted from <a href=https://deanattali.com/beautiful-jekyll/>Beautiful Jekyll</a></p></div></div></div></footer><script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js integrity=sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4 crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js integrity=sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js integrity=sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://www.variadic.xyz/js/main.js></script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://www.variadic.xyz/js/load-photoswipe.js></script></body></html>

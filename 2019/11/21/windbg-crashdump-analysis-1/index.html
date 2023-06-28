@@ -1,0 +1,268 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>windbg crashdump 1 - a few notes</title><meta name=description content="analyzing an abort in windbg"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2019\/11\/21\/windbg-crashdump-analysis-1\/","name":"Windbg crashdump 1"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"windbg crashdump 1","description":"analyzing an abort in windbg","inLanguage":"en","wordCount":1124,"datePublished":"2019-11-21T00:00:00","dateModified":"2019-11-21T00:00:00","image":"https:\/\/www.variadic.xyz\/","keywords":["windows, windbg, debug"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2019\/11\/21\/windbg-crashdump-analysis-1\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="windbg crashdump 1"><meta property="og:description" content="analyzing an abort in windbg"><meta property="og:url" content="https://www.variadic.xyz/2019/11/21/windbg-crashdump-analysis-1/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="windbg crashdump 1"><meta name=twitter:description content="analyzing an abort in windbg"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span></button>
+<a class=navbar-brand href=https://www.variadic.xyz/>a few notes</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Notes href=/>Notes</a></li><li><a title=Archive href=/archive/>Archive</a></li><li><a title=Tags href=/tags/>Tags</a></li><li><a title=About href=/about/>About</a></li><li><a title=Disclaimer href=/disclaimer/>Disclaimer</a></li><li><a title=Books href=/books/>Books</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>windbg crashdump 1</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on November 21, 2019</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><link rel=stylesheet href=https://www.variadic.xyz/css/hugo-easy-gallery.css><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/images/windbg1-img1-opencrashdump.png alt="open crash dump in windbg"></div><a href=/images/windbg1-img1-opencrashdump.png itemprop=contentUrl></a><figcaption><p>open crash dump in windbg</p></figcaption></figure></div><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>Windows <span style=color:#ae81ff>10</span> Version <span style=color:#ae81ff>18362</span> MP <span style=color:#f92672>(</span><span style=color:#ae81ff>4</span> procs<span style=color:#f92672>)</span> Free x64
+</span></span><span style=display:flex><span>Product: WinNt, suite: SingleUserTS
+</span></span><span style=display:flex><span>Built by: 10.0.18362.329 <span style=color:#f92672>(</span>WinBuild.160101.0800<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Machine Name:
+</span></span><span style=display:flex><span>Debug session time: Thu Nov <span style=color:#ae81ff>21</span> 18:32:37.000 <span style=color:#ae81ff>2019</span> <span style=color:#f92672>(</span>UTC - 8:00<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>System Uptime: <span style=color:#ae81ff>3</span> days 22:27:41.943
+</span></span><span style=display:flex><span>Process Uptime: <span style=color:#ae81ff>0</span> days 0:00:01.000
+</span></span><span style=display:flex><span>............
+</span></span><span style=display:flex><span>This dump file has an exception of interest stored in it.
+</span></span><span style=display:flex><span>The stored exception information can be accessed via .ecxr.
+</span></span><span style=display:flex><span><span style=color:#f92672>(</span>62c.2a10<span style=color:#f92672>)</span>: Security check failure or stack buffer overrun - code c0000409 <span style=color:#f92672>(</span>first/second chance not available<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>ucrtbase!abort+0x4e:
+</span></span><span style=display:flex><span>00007ffb<span style=color:#d88200>`</span>5997db8e cd29            int     29h
+</span></span></code></pre></td></tr></table></div></div><p>First thing read thru this text, it often provides good enough information. Here windbg is warning you stored exception information in <code>.excr</code>.
+Generally you start with either <code>.excr</code> command or start with <a href=https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/using-the--analyze-extension><code>!analyze -v</code> extension</a>.</p><blockquote><p><code>.cls</code> command clears the window if gets too cluttered</p></blockquote><p><code>!analyze -v</code> dumps a lot of text, lets take it step by step:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">38
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>0:009&gt; !analyze -v
+</span></span><span style=display:flex><span>*******************************************************************************
+</span></span><span style=display:flex><span>*                                                                             *
+</span></span><span style=display:flex><span>*                        Exception Analysis                                   *
+</span></span><span style=display:flex><span>*                                                                             *
+</span></span><span style=display:flex><span>*******************************************************************************
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>*** WARNING: Unable to verify checksum <span style=color:#00a8c8>for</span> tbb-expt.exe
+</span></span><span style=display:flex><span>*** WARNING: Unable to verify checksum <span style=color:#00a8c8>for</span> tbb.dll
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DUMP_CLASS: <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DUMP_QUALIFIER: <span style=color:#ae81ff>400</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>CONTEXT:  <span style=color:#f92672>(</span>.ecxr<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#111>rax</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0000000000000001</span> <span style=color:#111>rbx</span><span style=color:#f92672>=</span>00000073bc0ff5e0 <span style=color:#111>rcx</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0000000000000007</span>
+</span></span><span style=display:flex><span><span style=color:#111>rdx</span><span style=color:#f92672>=</span>000000000000000f <span style=color:#111>rsi</span><span style=color:#f92672>=</span>00000073bc0fec50 <span style=color:#111>rdi</span><span style=color:#f92672>=</span>00007ff7b3a24710
+</span></span><span style=display:flex><span><span style=color:#111>rip</span><span style=color:#f92672>=</span>00007ffb5997db8e <span style=color:#111>rsp</span><span style=color:#f92672>=</span>00000073bc0fe410 <span style=color:#111>rbp</span><span style=color:#f92672>=</span>00000073bc0fe570
+</span></span><span style=display:flex><span> <span style=color:#111>r8</span><span style=color:#f92672>=</span>000001f14807e5f0  <span style=color:#111>r9</span><span style=color:#f92672>=</span>00007ffb59a31ec0 <span style=color:#111>r10</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0000000000000014</span>
+</span></span><span style=display:flex><span><span style=color:#111>r11</span><span style=color:#f92672>=</span>000001f148080180 <span style=color:#111>r12</span><span style=color:#f92672>=</span>00000073bc0fe690 <span style=color:#111>r13</span><span style=color:#f92672>=</span>00000073bc0fee00
+</span></span><span style=display:flex><span><span style=color:#111>r14</span><span style=color:#f92672>=</span>00000000ffffffff <span style=color:#111>r15</span><span style=color:#f92672>=</span>00000073bc0fee10
+</span></span><span style=display:flex><span><span style=color:#111>iopl</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>         nv up ei pl nz na pe nc
+</span></span><span style=display:flex><span><span style=color:#111>cs</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0033</span>  <span style=color:#111>ss</span><span style=color:#f92672>=</span>002b  <span style=color:#111>ds</span><span style=color:#f92672>=</span>002b  <span style=color:#111>es</span><span style=color:#f92672>=</span>002b  <span style=color:#111>fs</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0053</span>  <span style=color:#111>gs</span><span style=color:#f92672>=</span>002b             <span style=color:#111>efl</span><span style=color:#f92672>=</span><span style=color:#ae81ff>00000202</span>
+</span></span><span style=display:flex><span>ucrtbase!abort+0x4e:
+</span></span><span style=display:flex><span>00007ffb<span style=color:#d88200>`</span>5997db8e cd29            int     29h
+</span></span><span style=display:flex><span>Resetting default scope
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>FAULTING_IP: 
+</span></span><span style=display:flex><span>ucrtbase!abort+4e
+</span></span><span style=display:flex><span>00007ffb<span style=color:#d88200>`</span>5997db8e cd29            int     29h
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>EXCEPTION_RECORD:  <span style=color:#f92672>(</span>.exr -1<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>ExceptionAddress: 00007ffb5997db8e <span style=color:#f92672>(</span>ucrtbase!abort+0x000000000000004e<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>   ExceptionCode: c0000409 <span style=color:#f92672>(</span>Security check failure or stack buffer overrun<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>  ExceptionFlags: <span style=color:#ae81ff>00000001</span>
+</span></span><span style=display:flex><span>NumberParameters: <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>   Parameter<span style=color:#f92672>[</span>0<span style=color:#f92672>]</span>: <span style=color:#ae81ff>0000000000000007</span>
+</span></span><span style=display:flex><span>Subcode: 0x7 FAST_FAIL_FATAL_APP_EXIT
+</span></span></code></pre></td></tr></table></div></div><p>Here is clearly highlighted that <code>.excr</code> at <code>line 15</code> has expection information. <code>Lines 16-23</code> have register contents dumped. These are often helpful to make sense of what was being executed at the moment of error. With some basic assembly knowledge and patterns of code generated it can help pin-point the root cause in mins.</p><p><code>Line 24</code> points to the last stack-frame: <code>ucrtbase!abort+0x4e:</code>, the error was thrown from function <code>abort</code> in <code>ucrtbase</code> and offset <code>0x4e</code> in that fn. The executed at that line is <code>int 29h</code>, which is an instruction defined by [<code>__fastfail</code> intrinsic] (<a href="https://docs.microsoft.com/en-us/cpp/intrinsics/fastfail?view=vs-2019">https://docs.microsoft.com/en-us/cpp/intrinsics/fastfail?view=vs-2019</a>)</p><p>Now it <code>analyze</code> extension tries to classify the error per MS classification system. Here it listed error as <code>FATAL_APP_EXIT</code>, however the error code <code>0xc0000409</code> specified is not really what happened with this application. This is a case of unhandled exception from a background thread, eventually crashing the process not a stack-based buffer overflow.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>BUGCHECK_STR:  FATAL_APP_EXIT
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DEFAULT_BUCKET_ID:  FATAL_APP_EXIT
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>PROCESS_NAME:  tbb-expt.exe
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>ERROR_CODE: <span style=color:#f92672>(</span>NTSTATUS<span style=color:#f92672>)</span> 0xc0000409 - The system detected an overrun of a stack-based buffer in this application. This overrun could potentially allow a malicious user to gain control of this application.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>EXCEPTION_CODE: <span style=color:#f92672>(</span>NTSTATUS<span style=color:#f92672>)</span> 0xc0000409 - The system detected an overrun of a stack-based buffer in this application. This overrun could potentially allow a malicious user to gain control of this application.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>EXCEPTION_CODE_STR:  c0000409
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>EXCEPTION_PARAMETER1:  <span style=color:#ae81ff>0000000000000007</span>
+</span></span></code></pre></td></tr></table></div></div><p>I have posted the entire output of this <code>analyze -v</code> command here on <a href=https://gist.github.com/angeleno/3827926fbd35842049217107695a00e1>gist.github.com</a>. Towards the end of <code>analyze</code> output it prints the call-stack for the thread from which the error was cached in <code>.excr</code>. However that is just 1 thread.</p><p>To further check what is going on, I am going to query threads in this dump with command <code>~</code>:</p><blockquote><p><a href=https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/---thread-status->Thread status command</a></p></blockquote><pre tabindex=0><code>0:009&gt; ~
+   0  Id: 62c.1084 Suspend: 1 Teb: 00000073`bacb7000 Unfrozen
+   1  Id: 62c.3a48 Suspend: 1 Teb: 00000073`bacb9000 Unfrozen
+   2  Id: 62c.2828 Suspend: 1 Teb: 00000073`bacbb000 Unfrozen
+   3  Id: 62c.2850 Suspend: 1 Teb: 00000073`bacbd000 Unfrozen
+   4  Id: 62c.2b28 Suspend: 1 Teb: 00000073`bacbf000 Unfrozen
+   5  Id: 62c.41a0 Suspend: 1 Teb: 00000073`bacc1000 Unfrozen
+   6  Id: 62c.40c Suspend: 0 Teb: 00000073`bacc3000 Unfrozen
+   7  Id: 62c.854 Suspend: 0 Teb: 00000073`bacc5000 Unfrozen
+   8  Id: 62c.2ef4 Suspend: 0 Teb: 00000073`bacc7000 Unfrozen
+.  9  Id: 62c.2a10 Suspend: 0 Teb: 00000073`bacc9000 Unfrozen
+  10  Id: 62c.1a58 Suspend: 0 Teb: 00000073`baccb000 Unfrozen
+  11  Id: 62c.890 Suspend: 0 Teb: 00000073`baccd000 Unfrozen
+  12  Id: 62c.17f0 Suspend: 0 Teb: 00000073`baccf000 Unfrozen
+</code></pre><p>Here <code>62c</code> is process-id and <code>1084</code>, <code>3a48</code> and so on are thread-ids.</p><p>to check stack of thread <code>3a48</code> Thread#1, execute command: <code>~1 KB</code>:</p><pre tabindex=0><code>0:009&gt; ~1 KB
+ # RetAddr           : Args to Child                                                           : Call Site
+00 00007ffb`5c9b4060 : 00000000`00000000 00000000`00000000 000001f1`480639d0 00000000`00000002 : ntdll!NtWaitForWorkViaWorkerFactory+0x14
+01 00007ffb`5afc7bd4 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : ntdll!TppWorkerThread+0x300
+02 00007ffb`5c9eced1 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : kernel32!BaseThreadInitThunk+0x14
+03 00000000`00000000 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : ntdll!RtlUserThreadStart+0x21
+</code></pre><p>To check stack of (upto 25 frames):</p><ul><li>all threads, execute command: <code>~* KB 25</code></li><li>thread that caused exception: <code>~# K 25</code></li><li><code>~# kP 25</code> provides with lot more information to browse thru</li></ul><blockquote><p>Note: <a href=https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/k--kb--kc--kd--kp--kp--kv--display-stack-backtrace-><code>K</code> command</a> takes various parameters and prints stack with various level of details. I have found kP to be quite verbose and browsable, but for blog posts <code>KC</code> option works best</p></blockquote><p>Looking at call-stack:</p><pre tabindex=0><code>0:009&gt; ~# KC 25
+ # Call Site
+00 ucrtbase!abort
+01 ucrtbase!terminate
+02 VCRUNTIME140!FindHandler&lt;__FrameHandler3&gt;
+03 VCRUNTIME140!__InternalCxxFrameHandler&lt;__FrameHandler3&gt;
+04 VCRUNTIME140!__CxxFrameHandler3
+05 ntdll!RtlpExecuteHandlerForException
+06 ntdll!RtlDispatchException
+07 ntdll!RtlRaiseException
+08 KERNELBASE!RaiseException
+09 VCRUNTIME140!_CxxThrowException
+0a msvcp140!std::_Xout_of_range
+0b tbb_expt!std::vector&lt;int,std::allocator&lt;int&gt; &gt;::_Xrange
+0c tbb_expt!std::vector&lt;int,std::allocator&lt;int&gt; &gt;::at
+0d tbb_expt!parallelFor::__l5::&lt;lambda_66c7355d0edda6973d22642add3a91c2&gt;::operator()
+0e tbb_expt!std::_For_each_ivdep
+0f tbb_expt!std::_Static_partitioned_for_each2&lt;int *,__int64,&lt;lambda_66c7355d0edda6973d22642add3a91c2&gt; &gt;::_Process_chunk
+10 tbb_expt!std::_Run_available_chunked_work&lt;std::_Static_partitioned_for_each2&lt;int *,__int64,&lt;lambda_66c7355d0edda6973d22642add3a91c2&gt; &gt; &gt;
+11 tbb_expt!std::_Static_partitioned_for_each2&lt;int *,__int64,&lt;lambda_66c7355d0edda6973d22642add3a91c2&gt; &gt;::_Threadpool_callback
+12 ntdll!TppWorkpExecuteCallback
+13 ntdll!TppWorkerThread
+14 kernel32!BaseThreadInitThunk
+15 ntdll!RtlUserThreadStart
+</code></pre><p>we can safely say that <code>std::vector&lt;int>::at()</code> threw an exception of for out of range: <code>_Xout_of_range</code> (Frame <code>0c</code> and <code>0a</code>). This raised an error <code>_CxxThrowException</code> at frame <code>09</code> and eventually lead to it trying to find exception handler to be executed: <code>FindHandler&lt;__FrameHandler3></code> at frame <code>02</code>, which we did not register in first place: thus it called <code>terminate</code>.</p><p>The code is to this effect:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">37
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;vector&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;atomic&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;utility&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;algorithm&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;execution&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>constexpr</span> <span style=color:#00a8c8>int</span> <span style=color:#111>StepSize</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>constexpr</span> <span style=color:#00a8c8>int</span> <span style=color:#111>Start</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>constexpr</span> <span style=color:#00a8c8>int</span> <span style=color:#111>End</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>9</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>static</span> <span style=color:#00a8c8>void</span> <span style=color:#75af00>parallelFor</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>vector</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span> <span style=color:#111>vec</span><span style=color:#111>{</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span><span style=color:#ae81ff>2</span><span style=color:#111>,</span><span style=color:#ae81ff>3</span><span style=color:#111>,</span><span style=color:#ae81ff>4</span><span style=color:#111>,</span><span style=color:#ae81ff>5</span><span style=color:#111>,</span><span style=color:#ae81ff>6</span><span style=color:#111>,</span><span style=color:#ae81ff>7</span><span style=color:#111>,</span><span style=color:#ae81ff>8</span><span style=color:#111>};</span>
+</span></span><span style=display:flex><span>	<span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>reserve</span><span style=color:#111>(</span><span style=color:#ae81ff>50</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>	
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>try</span>
+</span></span><span style=display:flex><span>	<span style=color:#111>{</span>
+</span></span><span style=display:flex><span>	
+</span></span><span style=display:flex><span>	<span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>for_each</span><span style=color:#111>(</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>execution</span><span style=color:#f92672>::</span><span style=color:#111>par_unseq</span><span style=color:#111>,</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>(),</span>
+</span></span><span style=display:flex><span>			<span style=color:#111>[</span><span style=color:#f92672>&amp;</span><span style=color:#111>vec</span><span style=color:#111>](</span><span style=color:#00a8c8>int</span> <span style=color:#111>idx</span><span style=color:#111>)</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>void</span>
+</span></span><span style=display:flex><span>			<span style=color:#111>{</span>
+</span></span><span style=display:flex><span>				<span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>vec</span><span style=color:#111>.</span><span style=color:#111>at</span><span style=color:#111>(</span><span style=color:#111>idx</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>3</span><span style=color:#111>)</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>endl</span><span style=color:#111>;</span>			
+</span></span><span style=display:flex><span>			<span style=color:#111>});</span>
+</span></span><span style=display:flex><span>	<span style=color:#111>}</span>
+</span></span><span style=display:flex><span>	<span style=color:#00a8c8>catch</span> <span style=color:#111>(</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>exception</span><span style=color:#f92672>&amp;</span> <span style=color:#111>ex</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>	<span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// this will never be called- as unhandled exception from background
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#75715e>// thread will terminate application
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#75af00>main</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>parallelFor</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Now the funny thing is: even if you change the execution policy to <code>std::execution::seq</code> from <code>std::execution::par_unseq</code>, it will still crash the application. The rational behind this decision is to keep behavior consistent for API whether you are running parallel or not..</p><p>That&rsquo;s it for now..</p><div class=blog-tags><a href=https://www.variadic.xyz//tags/windows/>windows</a>&nbsp;
+<a href=https://www.variadic.xyz//tags/windbg/>windbg</a>&nbsp;
+<a href=https://www.variadic.xyz//tags/debug/>debug</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2019/11/20/vs-squiggly/ data-toggle=tooltip data-placement=top title="VS squiggly lines">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2019/12/01/semaphores-1/ data-toggle=tooltip data-placement=top title="notes on semaphores, part 1">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://www.variadic.xyz/>a few notes</a></p><p class="credits theme-by text-muted"><a href=https://gohugo.io>Hugo v0.101.0</a> powered &nbsp;&bull;&nbsp; Theme <a href=https://github.com/halogenica/beautifulhugo>Beautiful Hugo</a> adapted from <a href=https://deanattali.com/beautiful-jekyll/>Beautiful Jekyll</a></p></div></div></div></footer><script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js integrity=sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4 crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js integrity=sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js integrity=sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://www.variadic.xyz/js/main.js></script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://www.variadic.xyz/js/load-photoswipe.js></script></body></html>

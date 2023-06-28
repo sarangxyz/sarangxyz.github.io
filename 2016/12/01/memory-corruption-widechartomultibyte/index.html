@@ -1,0 +1,251 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>memory corruption WideCharToMultiByte - a few notes</title><meta name=description content="detailed investigation on how to figure out memory corruption with windbg"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2016\/12\/01\/memory-corruption-widechartomultibyte\/","name":"Memory corruption wide char to multi byte"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"memory corruption WideCharToMultiByte","description":"detailed investigation on how to figure out memory corruption with windbg","inLanguage":"en","wordCount":1415,"datePublished":"2016-12-01T20:24:35","dateModified":"2016-12-01T20:24:35","image":"https:\/\/www.variadic.xyz\/","keywords":["windows, debug, windbg"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2016\/12\/01\/memory-corruption-widechartomultibyte\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="memory corruption WideCharToMultiByte"><meta property="og:description" content="detailed investigation on how to figure out memory corruption with windbg"><meta property="og:url" content="https://www.variadic.xyz/2016/12/01/memory-corruption-widechartomultibyte/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="memory corruption WideCharToMultiByte"><meta name=twitter:description content="detailed investigation on how to figure out memory corruption with windbg"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span></button>
+<a class=navbar-brand href=https://www.variadic.xyz/>a few notes</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Notes href=/>Notes</a></li><li><a title=Archive href=/archive/>Archive</a></li><li><a title=Tags href=/tags/>Tags</a></li><li><a title=About href=/about/>About</a></li><li><a title=Disclaimer href=/disclaimer/>Disclaimer</a></li><li><a title=Books href=/books/>Books</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>memory corruption WideCharToMultiByte</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on December 1, 2016</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><p>Recently I have been debugging some memory corruption that happened only after something executed 64 times, <code>free</code> complained that memory has been corrupted.
+Thus started the usual process of debugging. I started <a href="https://www.microsoft.com/en-us/download/details.aspx?id=20028"><code>ApplicationVerifier</code></a> and set the application and enabled the basic checks.</p><link rel=stylesheet href=https://www.variadic.xyz/css/hugo-easy-gallery.css><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/images/ApplicationVerifierBasicTests.png alt="Application Verifier- Basic Checks"></div><a href=/images/ApplicationVerifierBasicTests.png itemprop=contentUrl></a><figcaption><p>Application Verifier- Basic Checks</p></figcaption></figure></div><p>Soon my application started failing with access violation during startup, this happened even before I reached the code where memory was corrupted. Now I have two problems to investigate.
+This time I was crashing with call to <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd374130(v=vs.85).aspx"><code>WideCharToMultiByte</code></a>. Started debugging to see exactly where it was failing:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>  ntdll.dll!RtlUnicodeToUTF8N<span style=color:#f92672>()</span> Unknown
+</span></span><span style=display:flex><span>  KernelBase.dll!WideCharToMultiByte<span style=color:#f92672>()</span> Unknown
+</span></span><span style=display:flex><span>  vfbasics.dll!000007fef081cd0c<span style=color:#f92672>()</span> Unknown
+</span></span><span style=display:flex><span>&gt; heapcorruption.exe!dllNotificationFunction<span style=color:#f92672>(</span>unsigned long NotificationReason, const _LDR_DLL_NOTIFICATION_DATA * NotificationData, void * Context<span style=color:#f92672>)</span> Line <span style=color:#ae81ff>64</span> C++
+</span></span><span style=display:flex><span>  ntdll.dll!string <span style=color:#d88200>&#34;Enabling heap debug options\n&#34;</span><span style=color:#f92672>()</span> Unknown
+</span></span><span style=display:flex><span>  ntdll.dll!LdrpFindOrMapDll<span style=color:#f92672>()</span> Unknown
+</span></span><span style=display:flex><span>  ntdll.dll!LdrpLoadDll<span style=color:#f92672>()</span> Unknown
+</span></span><span style=display:flex><span>  ntdll.dll!LdrLoadDll<span style=color:#f92672>()</span> Unknown
+</span></span><span style=display:flex><span>  vfbasics.dll!000007fef08074de<span style=color:#f92672>()</span> Unknown
+</span></span><span style=display:flex><span>  KernelBase.dll!LoadLibraryExW<span style=color:#f92672>()</span> Unknown
+</span></span><span style=display:flex><span>  heapcorruption.exe!main<span style=color:#f92672>()</span> Line <span style=color:#ae81ff>94</span> C++
+</span></span><span style=display:flex><span>  heapcorruption.exe!invoke_main<span style=color:#f92672>()</span> Line <span style=color:#ae81ff>75</span> C++
+</span></span></code></pre></td></tr></table></div></div><p>Failing right in guts of ntdll code- for sure something invalid has been passed to <code>WideCharToMultiByte</code>, so I started with <a href=https://developer.microsoft.com/en-us/windows/hardware/windows-driver-kit><code>windbg</code></a> and hit <a href=http://windbg.info/doc/1-common-cmds.html><code>g</code></a>.
+Once it crashed into ntdll it was time to analyze what went wrong: <code>analyze -v</code></p><p>windbg output:</p><pre tabindex=0><code>0:000&gt; !analyze -v
+*******************************************************************************
+*                                                                             *
+*                        Exception Analysis                                   *
+*                                                                             *
+*******************************************************************************
+FAULTING_IP: 
+ntdll!RtlUnicodeToUTF8N+149
+00007ffb`06cb74e9 410fb709        movzx   ecx,word ptr [r9]
+
+EXCEPTION_RECORD:  ffffffffffffffff -- (.exr 0xffffffffffffffff)
+ExceptionAddress: 00007ffb06cb74e9 (ntdll!RtlUnicodeToUTF8N+0x0000000000000149)
+   ExceptionCode: c0000005 (Access violation)
+  ExceptionFlags: 00000000
+NumberParameters: 2
+   Parameter[0]: 0000000000000000
+   Parameter[1]: 0000021c29c68000
+Attempt to read from address 0000021c29c68000
+
+FAULTING_THREAD:  0000000000002748
+PROCESS_NAME:  heapcorruption.exe
+
+ADDITIONAL_DEBUG_TEXT:  
+FAULTING_MODULE: 00007ffb06c50000 ntdll
+DEBUG_FLR_IMAGE_TIMESTAMP:  584119c4
+ERROR_CODE: (NTSTATUS) 0xc0000005 - The instruction at 0x%p referenced memory at 0x%p. The memory could not be %s.
+EXCEPTION_CODE: (NTSTATUS) 0xc0000005 - The instruction at 0x%p referenced memory at 0x%p. The memory could not be %s.
+EXCEPTION_PARAMETER1:  0000000000000000
+EXCEPTION_PARAMETER2:  0000021c29c68000
+READ_ADDRESS:  0000021c29c68000 
+
+FOLLOWUP_IP: 
+heapcorruption!dllNotificationFunction+ae [f:\code\blogposts\heapcorruption\heapcorruption\heapcorruption.cpp @ 70]
+00007ff7`c351181e 898534030000    mov     dword ptr [rbp+334h],eax
+BUGCHECK_STR:  APPLICATION_FAULT_INVALID_POINTER_READ_WRONG_SYMBOLS
+PRIMARY_PROBLEM_CLASS:  INVALID_POINTER_READ
+DEFAULT_BUCKET_ID:  INVALID_POINTER_READ
+LAST_CONTROL_TRANSFER:  from 00007ffb04001c4f to 00007ffb06cb74e9
+</code></pre><p>One thing we know for sure: we are accessing invalid memory- there is potential for reading past the end of string.</p><pre tabindex=0><code>ERROR_CODE: (NTSTATUS) 0xc0000005 - The instruction at 0x%p referenced memory at 0x%p. The memory could not be %s.
+EXCEPTION_CODE: (NTSTATUS) 0xc0000005 - The instruction at 0x%p referenced memory at 0x%p. The memory could not be %s.
+</code></pre><p>Let&rsquo;s roll up our sleeves and start looking at what is being passed to <code>WideCharToMultiByte</code> and is that valid.
+Now this is what the disassembly looks like in VS (interleaved):</p><pre tabindex=0><code>00007FF7C3511770  mov         qword ptr [rsp+18h],r8  
+00007FF7C3511775  mov         qword ptr [rsp+10h],rdx  
+00007FF7C351177A  mov         dword ptr [rsp+8],ecx  
+00007FF7C351177E  push        rbp  
+00007FF7C351177F  push        rdi  
+00007FF7C3511780  sub         rsp,548h  
+00007FF7C3511787  lea         rbp,[rsp+40h]  
+00007FF7C351178C  mov         rdi,rsp  
+00007FF7C351178F  mov         ecx,152h  
+00007FF7C3511794  mov         eax,0CCCCCCCCh  
+00007FF7C3511799  rep stos    dword ptr [rdi]  
+00007FF7C351179B  mov         ecx,dword ptr [rsp+568h]  
+00007FF7C35117A2  mov         rax,qword ptr [__security_cookie (07FF7C351C000h)]  
+00007FF7C35117A9  xor         rax,rbp  
+00007FF7C35117AC  mov         qword ptr [rbp+4F0h],rax  
+    //printf(&#34;length of string is- %d chars, and Length in Bytes- %d\n&#34;, (int)wcslen(NotificationData-&gt;Loaded.FullDllName-&gt;Buffer), 
+    //                                          NotificationData-&gt;Loaded.FullDllName-&gt;Length);
+    char utf8Str[3 * _MAX_PATH + 1] = &#34;\0&#34;;
+00007FF7C35117B3  movzx       eax,word ptr [string &#34;\0&#34; (07FF7C3519D24h)]  
+00007FF7C35117BA  mov         word ptr [utf8Str],ax  
+00007FF7C35117BE  lea         rax,[rbp+12h]  
+00007FF7C35117C2  mov         rdi,rax  
+00007FF7C35117C5  xor         eax,eax  
+00007FF7C35117C7  mov         ecx,30Bh  
+00007FF7C35117CC  rep stos    byte ptr [rdi]  
+    int nBytes = WideCharToMultiByte(CP_UTF8, 0, 
+00007FF7C35117CE  mov         rax,qword ptr [NotificationData]  
+00007FF7C35117D5  mov         rax,qword ptr [rax+8]  
+00007FF7C35117D9  movzx       eax,word ptr [rax]  
+00007FF7C35117DC  mov         rcx,qword ptr [NotificationData]  
+00007FF7C35117E3  mov         rcx,qword ptr [rcx+8]  
+00007FF7C35117E7  mov         qword ptr [rsp+38h],0  
+00007FF7C35117F0  mov         qword ptr [rsp+30h],0  
+00007FF7C35117F9  mov         dword ptr [rsp+28h],30Ch  
+00007FF7C3511801  lea         rdx,[utf8Str]  
+00007FF7C3511805  mov         qword ptr [rsp+20h],rdx  
+00007FF7C351180A  mov         r9d,eax  
+00007FF7C351180D  mov         r8,qword ptr [rcx+8]  
+00007FF7C3511811  xor         edx,edx  
+00007FF7C3511813  mov         ecx,0FDE9h  
+00007FF7C3511818  call        qword ptr [__imp_WideCharToMultiByte (07FF7C3520018h)]  
+00007FF7C351181E  mov         dword ptr [nBytes],eax  
+                                     NotificationData-&gt;Loaded.FullDllName-&gt;Buffer, 
+                                     NotificationData-&gt;Loaded.FullDllName-&gt;Length,
+                                     //(int)wcslen(NotificationData-&gt;Loaded.FullDllName-&gt;Buffer),
+                                     utf8Str, (int)sizeof(utf8Str) - 1, nullptr, nullptr);
+    
+</code></pre><p>Things to note: <code>rep stos dword ptr [rdi]</code> we are initing <code>utf8Str</code>. The according to x64 calling conventions first 4 parameters are passed in registers remaining ones in stack.<br>The order of parameters passed in registers are:</p><pre tabindex=0><code>1. rcx
+2. rdx
+3. r8
+4. r9
+</code></pre><p>Thus for the following function call (all paramters are passed in reverse order- last ones are put in place first)</p><pre tabindex=0><code>    int nBytes = WideCharToMultiByte(CP_UTF8, 0, 
+                                     NotificationData-&gt;Loaded.FullDllName-&gt;Buffer, 
+                                     NotificationData-&gt;Loaded.FullDllName-&gt;Length,
+                                     utf8Str, (int)sizeof(utf8Str) - 1, nullptr, nullptr);
+</code></pre><p>first two <code>nullptr</code>/ <code>0</code> are passed on stack</p><pre tabindex=0><code>00007FF7C35117E7  mov         qword ptr [rsp+38h],0  
+00007FF7C35117F0  mov         qword ptr [rsp+30h],0  
+</code></pre><p>then followed by an <code>(int)sizeof(utf8Str) - 1</code>, whose value is <code>30Ch</code></p><pre tabindex=0><code>00007FF7C35117F9  mov         dword ptr [rsp+28h],30Ch 
+</code></pre><p>then <code>utf8Str</code></p><pre tabindex=0><code>00007FF7C3511801  lea         rdx,[utf8Str]  
+00007FF7C3511805  mov         qword ptr [rsp+20h],rdx  
+</code></pre><p>then followed by first 4 parameters:</p><pre tabindex=0><code>; NotificationData-&gt;Loaded.FullDllName-&gt;Length
+00007FF7C351180A  mov         r9d,eax         
+        
+; NotificationData-&gt;Loaded.FullDllName-&gt;Buffer
+00007FF7C351180D  mov         r8,qword ptr [rcx+8]    
+
+00007FF7C3511811  xor         edx,edx                 ; 0
+00007FF7C3511813  mov         ecx,0FDE9h              ; CP_UTF8
+</code></pre><p>And here is the assembly generated from windbg as code is being executed:</p><pre tabindex=0><code>   64 00007ff7`c35117cc f3aa            rep stos byte ptr [rdi]
+   70 00007ff7`c35117ce 488b8528050000  mov     rax,qword ptr [rbp+528h]
+   70 00007ff7`c35117d5 488b4008        mov     rax,qword ptr [rax+8]
+   70 00007ff7`c35117d9 0fb700          movzx   eax,word ptr [rax]
+   70 00007ff7`c35117dc 488b8d28050000  mov     rcx,qword ptr [rbp+528h]
+   70 00007ff7`c35117e3 488b4908        mov     rcx,qword ptr [rcx+8]
+   70 00007ff7`c35117e7 48c744243800000000 mov   qword ptr [rsp+38h],0
+   70 00007ff7`c35117f0 48c744243000000000 mov   qword ptr [rsp+30h],0
+   70 00007ff7`c35117f9 c74424280c030000 mov     dword ptr [rsp+28h],30Ch
+   70 00007ff7`c3511801 488d5510        lea     rdx,[rbp+10h]
+   70 00007ff7`c3511805 4889542420      mov     qword ptr [rsp+20h],rdx
+   70 00007ff7`c351180a 448bc8          mov     r9d,eax
+   70 00007ff7`c351180d 4c8b4108        mov     r8,qword ptr [rcx+8]
+   70 00007ff7`c3511811 33d2            xor     edx,edx
+   70 00007ff7`c3511813 b9e9fd0000      mov     ecx,0FDE9h
+   70 00007ff7`c3511818 ff15fae70000    call    qword ptr [heapcorruption!_imp_WideCharToMultiByte (00007ff7`c3520018)]
+</code></pre><p>Now the most important thing to track here is <code>Length</code> & <code>Buffer</code> values.
+Buffer was passed in <code>r8</code> which is <code>[rcx+8]</code></p><p>Now I want to see the address just before call to <code>heapcorruption!_imp_WideCharToMultiByte</code>- so i have set the breakpoint at address with command: <code>bp 00007FF7C3511818</code> followed by <code>g</code>
+once windbg breaks then i can observe register values with command <code>r</code>:</p><pre tabindex=0><code>0:000&gt; bp 00007FF7C3511818
+0:000&gt; g
+Breakpoint 1 hit
+heapcorruption!dllNotificationFunction+0xa8:
+00007ff7`c3511818 ff15fae70000    call    qword ptr [heapcorruption!_imp_WideCharToMultiByte (00007ff7`c3520018)] ds:00007ff7`c3520018=00007ffaddfbcc94
+0:000&gt; r
+rax=0000000000000076 rbx=0000021c29c5afe0 rcx=000000000000fde9
+rdx=0000000000000000 rsi=00007ffb06d9c5d0 rdi=000000cb396ff2ed
+rip=00007ff7c3511818 rsp=000000cb396fef90 rbp=000000cb396fefd0
+ r8=0000021c29c67f80  r9=0000000000000076 r10=0000000000000000
+r11=000000cb396ff548 r12=0000021c29c63fb0 r13=0000000000000000
+r14=0000000000000000 r15=0000021c29c61f80
+iopl=0         nv up ei pl zr na po nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000246
+heapcorruption!dllNotificationFunction+0xa8:
+00007ff7`c3511818 ff15fae70000    call    qword ptr [heapcorruption!_imp_WideCharToMultiByte (00007ff7`c3520018)] ds:00007ff7`c3520018=00007ffaddfbcc94
+</code></pre><p>Note the buffer was passed in <code>r8</code> it&rsquo;s contents are <code>0000021c29c67f80</code> and size was passed in <code>r9</code> it&rsquo;s contents are <code>0000000000000076</code> (118 bytes).
+you can look at what&rsquo;s in the address with this command:</p><pre tabindex=0><code>; we are dealing with unicode so better turn it on
+0:000&gt; .enable_unicode 1     
+ 
+; interpret data at this address as strings- luckily for us it is null terminated
+0:000&gt; du 0000021c29c67f80    
+0000021c`29c67f80  &#34;F:\code\blogposts\heapcorruption&#34;
+0000021c`29c67fc0  &#34;\x64\Debug\ClassLibrary.dll&#34;
+
+; du prints at max 48 chars per line
+</code></pre><p>after this observation i hit <code>g</code> and there comes access violation:</p><pre tabindex=0><code>0:000&gt; g
+(2728.2748): Access violation - code c0000005 (first chance)
+First chance exceptions are reported before any exception handling.
+This exception may be expected and handled.
+ntdll!RtlUnicodeToUTF8N+0x149:
+00007ffb`06cb74e9 410fb709        movzx   ecx,word ptr [r9] ds:0000021c`29c68000=????
+</code></pre><p>Now the complaint from windbg here is that address is not a string, <code>analyze -v</code> command executed earlier, thus i set out to print what is in the memory:</p><pre tabindex=0><code>0:000&gt; du 0000021c29c68000
+0000021c`29c68000  &#34;????????????????????????????????&#34;
+0000021c`29c68040  &#34;????????????????????????????????&#34;
+0000021c`29c68080  &#34;????????????????????????????????&#34;
+0000021c`29c680c0  &#34;????????????????????????????????&#34;
+0000021c`29c68100  &#34;????????????????????????????????&#34;
+0000021c`29c68140  &#34;????????????????????????????????&#34;
+0000021c`29c68180  &#34;????????????????????????????????&#34;
+0000021c`29c681c0  &#34;????????????????????????????????&#34;
+0000021c`29c68200  &#34;????????????????????????????????&#34;
+0000021c`29c68240  &#34;????????????????????????????????&#34;
+0000021c`29c68280  &#34;????????????????????????????????&#34;
+0000021c`29c682c0  &#34;????????????????????????????????&#34;
+
+; there is nothing here!- so why are we even trying to copy this mem?
+</code></pre><p>Now I have strong suspicion that we are reading past the end of Buffer passed in earlier.
+<code>0000021c29c68000 - 0000021c29c67f80 --> 80h</code><br>here is the problem- we are reading past the buffer!, <code>r9</code> had value of <code>76h</code> and now we are at <code>80h</code> this is the problem.</p><p>With this information when i look back at this call:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span>    <span style=color:#00a8c8>int</span> <span style=color:#111>nBytes</span> <span style=color:#f92672>=</span> <span style=color:#111>WideCharToMultiByte</span><span style=color:#111>(</span><span style=color:#111>CP_UTF8</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> 
+</span></span><span style=display:flex><span>                                     <span style=color:#111>NotificationData</span><span style=color:#f92672>-&gt;</span><span style=color:#111>Loaded</span><span style=color:#111>.</span><span style=color:#111>FullDllName</span><span style=color:#f92672>-&gt;</span><span style=color:#111>Buffer</span><span style=color:#111>,</span> 
+</span></span><span style=display:flex><span>                                     <span style=color:#111>NotificationData</span><span style=color:#f92672>-&gt;</span><span style=color:#111>Loaded</span><span style=color:#111>.</span><span style=color:#111>FullDllName</span><span style=color:#f92672>-&gt;</span><span style=color:#111>Length</span><span style=color:#111>,</span>
+</span></span><span style=display:flex><span>                                     <span style=color:#111>utf8Str</span><span style=color:#111>,</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span><span style=color:#111>)</span><span style=color:#00a8c8>sizeof</span><span style=color:#111>(</span><span style=color:#111>utf8Str</span><span style=color:#111>)</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#00a8c8>nullptr</span><span style=color:#111>,</span> <span style=color:#00a8c8>nullptr</span><span style=color:#111>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>I am passing in <code>NotificationData->Loaded.FullDllName->Length</code> as it is to function- which is actually #bytes not #wchars!
+the fix should be to pass #chars instead:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">9
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span>    <span style=color:#75715e>//  in case you string is always null terminated
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  int numChars = (int)wcslen(NotificationData-&gt;Loaded.FullDllName-&gt;Buffer);
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>//  2 is sizeof(WCHAR)
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#00a8c8>int</span> <span style=color:#111>numChars</span> <span style=color:#f92672>=</span> <span style=color:#111>NotificationData</span><span style=color:#f92672>-&gt;</span><span style=color:#111>Loaded</span><span style=color:#111>.</span><span style=color:#111>FullDllName</span><span style=color:#f92672>-&gt;</span><span style=color:#111>Length</span><span style=color:#f92672>/</span><span style=color:#ae81ff>2</span><span style=color:#111>;</span>  
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>int</span> <span style=color:#111>nBytes</span> <span style=color:#f92672>=</span> <span style=color:#111>WideCharToMultiByte</span><span style=color:#111>(</span><span style=color:#111>CP_UTF8</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> 
+</span></span><span style=display:flex><span>                                     <span style=color:#111>NotificationData</span><span style=color:#f92672>-&gt;</span><span style=color:#111>Loaded</span><span style=color:#111>.</span><span style=color:#111>FullDllName</span><span style=color:#f92672>-&gt;</span><span style=color:#111>Buffer</span><span style=color:#111>,</span> <span style=color:#111>numChars</span><span style=color:#111>,</span>
+</span></span><span style=display:flex><span>                                     <span style=color:#111>utf8Str</span><span style=color:#111>,</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span><span style=color:#111>)</span><span style=color:#00a8c8>sizeof</span><span style=color:#111>(</span><span style=color:#111>utf8Str</span><span style=color:#111>)</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#00a8c8>nullptr</span><span style=color:#111>,</span> <span style=color:#00a8c8>nullptr</span><span style=color:#111>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>and everything works great, also this is specified in documentation for <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa380518(v=vs.85).aspx"><code>UNICODE_STRING</code></a> and <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd374130(v=vs.85).aspx"><code>WideCharToMultiByte</code></a></p><p>Anyway with this heap corruption fixed I started reviewing the code as to why original problem happened only at 65th iteration- turns out it was due to a bitfield.
+An int was used to mark 32bits for some processing and we overflowed that- since binaries were 64bits, due to padding it survived till 64th iteration and the luckly corrupted memory.</p><p>I have uploaded <a href=https://github.com/sarangbaheti/heapcorruption>heapcorruption at github</a></p><h5 id=some-of-the-handy-links>Some of the handy links:</h5><ul><li><a href=http://windbg.info/doc/1-common-cmds.html>windbg commands</a></li><li><a href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff540507(v=vs.85).aspx">debugger commands</a></li></ul><div class=blog-tags><a href=https://www.variadic.xyz//tags/windows/>windows</a>&nbsp;
+<a href=https://www.variadic.xyz//tags/debug/>debug</a>&nbsp;
+<a href=https://www.variadic.xyz//tags/windbg/>windbg</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2016/11/27/over-to-hugo/ data-toggle=tooltip data-placement=top title="over to hugo">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2017/02/20/logging-off-users-remotely/ data-toggle=tooltip data-placement=top title="logging off users remotely">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://www.variadic.xyz/>a few notes</a></p><p class="credits theme-by text-muted"><a href=https://gohugo.io>Hugo v0.101.0</a> powered &nbsp;&bull;&nbsp; Theme <a href=https://github.com/halogenica/beautifulhugo>Beautiful Hugo</a> adapted from <a href=https://deanattali.com/beautiful-jekyll/>Beautiful Jekyll</a></p></div></div></div></footer><script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js integrity=sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4 crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js integrity=sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js integrity=sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://www.variadic.xyz/js/main.js></script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://www.variadic.xyz/js/load-photoswipe.js></script></body></html>

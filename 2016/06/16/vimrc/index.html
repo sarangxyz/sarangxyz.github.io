@@ -1,0 +1,253 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>vimrc - a few notes</title><meta name=description content="my vimrc backup"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2016\/06\/16\/vimrc\/","name":"Vimrc"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"vimrc","description":"my vimrc backup","inLanguage":"en","wordCount":870,"datePublished":"2016-06-16T20:44:00","dateModified":"2016-06-16T20:44:00","image":"https:\/\/www.variadic.xyz\/","keywords":["vim"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2016\/06\/16\/vimrc\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="vimrc"><meta property="og:description" content="my vimrc backup"><meta property="og:url" content="https://www.variadic.xyz/2016/06/16/vimrc/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="vimrc"><meta name=twitter:description content="my vimrc backup"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span></button>
+<a class=navbar-brand href=https://www.variadic.xyz/>a few notes</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Notes href=/>Notes</a></li><li><a title=Archive href=/archive/>Archive</a></li><li><a title=Tags href=/tags/>Tags</a></li><li><a title=About href=/about/>About</a></li><li><a title=Disclaimer href=/disclaimer/>Disclaimer</a></li><li><a title=Books href=/books/>Books</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>vimrc</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on June 16, 2016</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><p>These days vim is preferred editor, and have started using it at work and home alike.
+That means my vimrc kept evolving and had to sync at both the sites. Thought would back it up some where I can handily find it when required.</p><p>This post has all the contents of my vimrc as backup</p><pre tabindex=0><code>set nocompatible              &#34; be iMproved, required
+filetype off                  &#34; required
+
+&#34; search thru subdirectories as well
+set path+=**
+
+&#34;
+&#34;&#34; set the runtime path to include Vundle and initialize
+set rtp+=~/vimfiles/bundle/Vundle.vim/
+let path=&#39;~/vimfiles/bundle&#39;
+call vundle#begin(path)
+&#34;&#34; let Vundle manage Vundle, required
+Plugin &#39;gmarik/Vundle.vim&#39;
+Plugin &#39;wincent/command-t&#39;
+&#34;
+&#34; The following are examples of different formats supported.
+&#34; Keep Plugin commands between vundle#begin/end.
+&#34; plugin on GitHub repo
+Plugin &#39;tpope/vim-fugitive&#39;
+&#34;
+&#34; All of your Plugins must be added before the following line
+call vundle#end()            &#34; required
+filetype plugin indent on    &#34; required
+&#34; To ignore plugin indent changes, instead use:
+&#34;filetype plugin on
+&#34;
+&#34;
+&#34;   normal vim rc file from here
+&#34;
+&#34;   very much influenced by
+&#34;   https://amix.dk/vim/vimrc.html
+&#34;
+set numberwidth=5
+set showcmd
+set number
+set nocompatible
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set ruler
+set magic
+set cmdheight=2
+set showcmd
+set showmatch
+set smarttab
+set wildmenu
+set wildmode=list:longest,full
+set mouse=a
+set incsearch
+set hlsearch
+set ruler
+syntax on
+
+&#34; https://askubuntu.com/a/283909
+&#34; powerline statusline, expects that powerline (python version is installed)
+set rtp+=$HOME/.local/lib/python3.8/site-packages/powerline/bindings/vim/
+set laststatus=2
+
+&#34; folding related stuff
+&#34; reference: http://stackoverflow.com/questions/4789605/how-do-i-enable-automatic-folds-in-vim
+&#34;
+set foldmethod=syntax
+set foldlevelstart=1
+
+let python_fold=1
+let perl_fold=1
+
+
+
+&#34; Set to auto read when a file is changed from the outside
+&#34;set autoread
+let mapleader = &#34;,&#34;
+let g:mapleader = &#34;,&#34;
+&#34;
+&#34; fast saving
+nmap &lt;leader&gt;w :w!&lt;cr&gt;
+&#34;
+&#34; disable arrow keys
+&#34;noremap &lt;Up&gt; &lt;NOP&gt;
+&#34;noremap &lt;Down&gt; &lt;NOP&gt;
+&#34;noremap &lt;Left&gt; &lt;NOP&gt;
+&#34;noremap &lt;Right&gt; &lt;NOP&gt;
+
+
+&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;
+&#34; =&gt; VIM user interface
+&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;
+&#34; Set 7 lines to the cursor - when moving vertically using j/k
+set so=7
+
+&#34; Turn on the WiLd menu
+set wildmenu
+
+&#34; Ignore compiled files
+set wildignore=*.o,*~,*.pyc
+
+&#34;Always show current position
+set ruler
+
+&#34; Height of the command bar
+set cmdheight=2
+&#34;
+&#34; A buffer becomes hidden when it is abandoned
+set hid
+
+&#34; Configure backspace so it acts as it should act
+set backspace=eol,start,indent
+set whichwrap+=&lt;,&gt;,h,l
+
+&#34; Ignore case when searching
+set ignorecase
+
+&#34; When searching try to be smart about cases 
+set smartcase
+
+&#34; Highlight search results
+set hlsearch
+
+&#34; Makes search act like search in modern browsers
+set incsearch
+
+&#34; Don&#39;t redraw while executing macros (good performance config)
+set lazyredraw
+
+&#34; For regular expressions turn magic on
+set magic
+
+&#34; Show matching brackets when text indicator is over them
+set showmatch
+&#34; How many tenths of a second to blink when matching brackets
+set mat=2
+
+&#34; No annoying sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
+&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;
+&#34; =&gt; Files, backups and undo
+&#34; &#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;
+&#34; Turn backup off, since most stuff is in SVN, git et.c anyway...
+set nobackup
+set nowb
+set noswapfile
+
+
+&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;
+&#34; =&gt; Text, tab and indent related
+&#34; &#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;
+&#34; Use spaces instead of tabs
+set expandtab
+&#34; Be smart when using tabs ;)
+set smarttab
+&#34; 1 tab == 4 spaces
+set shiftwidth=4
+set tabstop=4
+&#34; Linebreak on 500 characters
+set lbr
+set tw=500
+&#34;
+set ai &#34;Auto indent
+set si &#34;Smart indent
+set wrap &#34;Wrap lines
+
+
+&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;
+&#34; =&gt; Moving around, tabs, windows and buffers
+&#34; &#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;&#34;
+&#34; Treat long lines as break lines (useful when moving around in them)
+map j gj
+map k gk
+&#34;
+&#34; Map &lt;Space&gt; to / (search) and Ctrl-&lt;Space&gt; to ? (backwards search)
+map &lt;space&gt; /
+map &lt;c-space&gt; ?
+
+&#34; Disable highlight when &lt;leader&gt;&lt;cr&gt; is pressed
+map &lt;silent&gt; &lt;leader&gt;&lt;cr&gt; :noh&lt;cr&gt;
+
+&#34; Smart way to move between windows
+map &lt;C-j&gt; &lt;C-W&gt;j
+map &lt;C-k&gt; &lt;C-W&gt;k
+map &lt;C-h&gt; &lt;C-W&gt;h
+map &lt;C-l&gt; &lt;C-W&gt;l
+
+&#34; Close the current buffer
+map &lt;leader&gt;bd :Bclose&lt;cr&gt;
+
+&#34; Close all the buffers
+map &lt;leader&gt;ba :1,1000 bd!&lt;cr&gt;
+
+&#34; Useful mappings for managing tabs
+map &lt;leader&gt;tn :tabnew&lt;cr&gt;
+map &lt;leader&gt;to :tabonly&lt;cr&gt;
+map &lt;leader&gt;tc :tabclose&lt;cr&gt;
+map &lt;leader&gt;tm :tabmove
+
+&#34; Opens a new tab with the current buffer&#39;s path
+&#34; Super useful when editing files in the same directory
+map &lt;leader&gt;te :tabedit &lt;c-r&gt;=expand(&#34;%:p:h&#34;)&lt;cr&gt;/
+
+
+
+filetype plugin indent on
+source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/mswin.vim
+behave mswin
+
+set diffexpr=MyDiff()
+function MyDiff()
+  let opt = &#39;-a --binary &#39;
+  if &amp;diffopt =~ &#39;icase&#39; | let opt = opt . &#39;-i &#39; | endif
+  if &amp;diffopt =~ &#39;iwhite&#39; | let opt = opt . &#39;-b &#39; | endif
+  let arg1 = v:fname_in
+  if arg1 =~ &#39; &#39; | let arg1 = &#39;&#34;&#39; . arg1 . &#39;&#34;&#39; | endif
+  let arg2 = v:fname_new
+  if arg2 =~ &#39; &#39; | let arg2 = &#39;&#34;&#39; . arg2 . &#39;&#34;&#39; | endif
+  let arg3 = v:fname_out
+  if arg3 =~ &#39; &#39; | let arg3 = &#39;&#34;&#39; . arg3 . &#39;&#34;&#39; | endif
+  let eq = &#39;&#39;
+  if $VIMRUNTIME =~ &#39; &#39;
+    if &amp;sh =~ &#39;\&lt;cmd&#39;
+      let cmd = &#39;&#34;&#34;&#39; . $VIMRUNTIME . &#39;\diff&#34;&#39;
+      let eq = &#39;&#34;&#39;
+    else
+      let cmd = substitute($VIMRUNTIME, &#39; &#39;, &#39;&#34; &#39;, &#39;&#39;) . &#39;\diff&#34;&#39;
+    endif
+  else
+    let cmd = $VIMRUNTIME . &#39;\diff&#39;
+  endif
+  silent execute &#39;!&#39; . cmd . &#39; &#39; . opt . arg1 . &#39; &#39; . arg2 . &#39; &gt; &#39; . arg3 . eq
+endfunction
+</code></pre><div class=blog-tags><a href=https://www.variadic.xyz//tags/vim/>vim</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2016/06/16/deleting-all-files-recursively/ data-toggle=tooltip data-placement=top title="deleting all matching files recursively">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2016/06/24/c-number-yaml-config/ data-toggle=tooltip data-placement=top title="C# yaml config">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://www.variadic.xyz/>a few notes</a></p><p class="credits theme-by text-muted"><a href=https://gohugo.io>Hugo v0.101.0</a> powered &nbsp;&bull;&nbsp; Theme <a href=https://github.com/halogenica/beautifulhugo>Beautiful Hugo</a> adapted from <a href=https://deanattali.com/beautiful-jekyll/>Beautiful Jekyll</a></p></div></div></div></footer><script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js integrity=sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4 crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js integrity=sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js integrity=sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://www.variadic.xyz/js/main.js></script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://www.variadic.xyz/js/load-photoswipe.js></script></body></html>

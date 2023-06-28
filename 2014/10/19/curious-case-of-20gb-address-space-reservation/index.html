@@ -1,0 +1,67 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>curious case of 20GB address space reservation - a few notes</title><meta name=description content="notes on debugging excessive address space reservation with nvidia graphics drivers using windbg on windows"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2014\/10\/19\/curious-case-of-20gb-address-space-reservation\/","name":"Curious case of 20 gb address space reservation"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"curious case of 20GB address space reservation","description":"notes on debugging excessive address space reservation with nvidia graphics drivers using windbg on windows","inLanguage":"en","wordCount":166,"datePublished":"2014-10-19T00:00:00","dateModified":"2014-10-19T00:00:00","image":"https:\/\/www.variadic.xyz\/","keywords":["misc, windbg"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2014\/10\/19\/curious-case-of-20gb-address-space-reservation\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="curious case of 20GB address space reservation"><meta property="og:description" content="notes on debugging excessive address space reservation with nvidia graphics drivers using windbg on windows"><meta property="og:url" content="https://www.variadic.xyz/2014/10/19/curious-case-of-20gb-address-space-reservation/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="curious case of 20GB address space reservation"><meta name=twitter:description content="notes on debugging excessive address space reservation with nvidia graphics drivers using windbg on windows"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span></button>
+<a class=navbar-brand href=https://www.variadic.xyz/>a few notes</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Notes href=/>Notes</a></li><li><a title=Archive href=/archive/>Archive</a></li><li><a title=Tags href=/tags/>Tags</a></li><li><a title=About href=/about/>About</a></li><li><a title=Disclaimer href=/disclaimer/>Disclaimer</a></li><li><a title=Books href=/books/>Books</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>curious case of 20GB address space reservation</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on October 19, 2014</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><pre tabindex=0><code>.reload /f kernel32.dll
+</code></pre><pre tabindex=0><code>bp kernel32!VirtualAlloc &#34;.if (@rdx&amp;gt;0x100000) {r; KB 25} .else {gc}&#34;
+</code></pre><pre tabindex=0><code>Below debugging information translates to:
+VirtualAlloc(0x0000000200000000, 20GB, MEM_RESERVE, PAGE_NOACCESS)
+VirtualAlloc(rcx, rdx, r8, r9)
+----------------------------------------------------------------------
+
+kernel32!VirtualAlloc:
+
+00000000`776c5c68 ff25ba760800    jmp     qword ptr 
+[kernel32!_imp_VirtualAlloc (00000000`7774d328)]
+ds:00000000`7774d328={KERNELBASE!VirtualAlloc (000007fe`fd721900)}
+
+ModLoad:000007fe`d1680000 000007fe`d23cc000 
+C:\windows\system32\nvcuda.dll
+ModLoad:000007fe`ec760000 000007fe`eca93000 
+C:\windows\system32\nvapi64.dll
+
+*** ERROR: Symbol file could not be found. 
+Defaulted to export symbols for C:\windows\system32\nvcuda.dll -
+
+rax=0000000700000000 rbx=0000000200000000 rcx=0000000200000000
+rdx=0000000500000000 rsi=000000fff8000000 rdi=0000000500000000
+rip=00000000776c5c68 rsp=000000000022c108 rbp=0000000100000000
+r8=0000000000002000  r9=0000000000000001 r10=0000000000000000
+r11=0000000000000246 r12=0000000000000000 r13=0000000000000002
+r14=0000000100000000 r15=000000fff8000000
+
+iopl=0         nv up ei ng nz na po cy
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             
+efl=00000287
+
+kernel32!VirtualAlloc:
+
+00000000`776c5c68 ff25ba760800    jmp    
+qword ptr [kernel32!_imp_VirtualAlloc (00000000`7774d328)]
+ds:00000000`7774d328={KERNELBASE!VirtualAlloc (000007fe`fd721900)}
+
+Child-SP          RetAddr           Call Site
+00000000`0022c108 000007fe`d1ecd538 kernel32!VirtualAlloc
+00000000`0022c110 000007fe`d16c7a33 nvcuda!cuProfilerStop+0x82fc18
+00000000`0022c140 000007fe`d16c7c0d nvcuda!cuProfilerStop+0x2a113
+00000000`0022c1a0 000007fe`d16c8595 nvcuda!cuProfilerStop+0x2a2ed
+00000000`0022c1f0 000007fe`d169fc09 nvcuda!cuProfilerStop+0x2ac75
+00000000`0022c230 000007fe`d169fd0a nvcuda!cuProfilerStop+0x22e9
+00000000`0022c270 000007fe`d1681417 nvcuda!cuProfilerStop+0x23ea
+00000000`0022c2a0 00000000`2e22337a nvcuda!cuInit+0x137
+</code></pre><p>Reference links:</p><ul><li>Memory Protection Constants (msdn.microsoft.com)</li><li>Debugging using Windbg : Symbols loading (windowstipspage.com)</li><li>Conditional breakpoints in WinDbg (msdn.microsoft.com)</li><li>Memory management under Windows (bugslasher.net)</li><li>Unpacking Dynamically Allocated Code (crowdstrike.com)</li><li>Debugging with the Right Tools (blogs.msdn.com)</li><li>Investigating Memory Issues (msdn.microsoft.com)</li></ul><div class=blog-tags><a href=https://www.variadic.xyz//tags/misc/>misc</a>&nbsp;
+<a href=https://www.variadic.xyz//tags/windbg/>windbg</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2014/08/28/origin-of-endian/ data-toggle=tooltip data-placement=top title="origin of endian">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2014/12/22/disabling-superfetch-prefetch-and-indexing/ data-toggle=tooltip data-placement=top title="disabling superfetch, prefetch and indexing">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://www.variadic.xyz/>a few notes</a></p><p class="credits theme-by text-muted"><a href=https://gohugo.io>Hugo v0.101.0</a> powered &nbsp;&bull;&nbsp; Theme <a href=https://github.com/halogenica/beautifulhugo>Beautiful Hugo</a> adapted from <a href=https://deanattali.com/beautiful-jekyll/>Beautiful Jekyll</a></p></div></div></div></footer><script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js integrity=sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4 crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js integrity=sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js integrity=sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://www.variadic.xyz/js/main.js></script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://www.variadic.xyz/js/load-photoswipe.js></script></body></html>

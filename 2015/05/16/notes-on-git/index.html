@@ -1,0 +1,353 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>notes on git - a few notes</title><meta name=description content="a few notes of git"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2015\/05\/16\/notes-on-git\/","name":"Notes on git"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"notes on git","description":"a few notes of git","inLanguage":"en","wordCount":2285,"datePublished":"2015-05-16T12:29:54","dateModified":"2015-05-16T12:29:54","image":"https:\/\/www.variadic.xyz\/","keywords":["git"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2015\/05\/16\/notes-on-git\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="notes on git"><meta property="og:description" content="a few notes of git"><meta property="og:url" content="https://www.variadic.xyz/2015/05/16/notes-on-git/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="notes on git"><meta name=twitter:description content="a few notes of git"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span></button>
+<a class=navbar-brand href=https://www.variadic.xyz/>a few notes</a></div><div class="collapse navbar-collapse" id=main-navbar><ul class="nav navbar-nav navbar-right"><li><a title=Notes href=/>Notes</a></li><li><a title=Archive href=/archive/>Archive</a></li><li><a title=Tags href=/tags/>Tags</a></li><li><a title=About href=/about/>About</a></li><li><a title=Disclaimer href=/disclaimer/>Disclaimer</a></li><li><a title=Books href=/books/>Books</a></li></ul></div></div></nav><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>notes on git</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on May 16, 2015</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><p>Now that I moved my blog to <a href=/>github-pages</a> generated by <a href=http://octopress.org/>octopress</a>, using git is the only way to make progress. Rather than digressing about my experiences @migrating from wordpress to octopress- I would rather keep this post as my notes on <code>git</code></p><hr><h2 id=getting-started>getting started</h2><p>I find it interesting to learn by jumping-in rather than reading tons of volumes first. To get started you need to let git know that you are going to be setting a repository, this needs to happen in a particular directory- which contains stuff you want to manage.
+The command is:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>git init .
+</span></span><span style=display:flex><span>Initialized empty Git repository in /home/sarangb/learn-git/.git/
+</span></span></code></pre></td></tr></table></div></div><p>Once an empty git repo is initialized now the next step is to add some content for git to track. Lets start by adding a a script that fetches weather information (just for fun). Once I have the script the next step is to let git know about it.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>git add *.sh
+</span></span><span style=display:flex><span>git commit -m <span style=color:#d88200>&#39;initial commit&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><p>This will add all <code>sh</code> files to git, this is two step process:</p><ol><li><code>git add</code> will add the files to a staging area, more on that shortly</li><li><code>git commit</code> will commit files in git repo</li></ol><p>Now that scripts have been added. Say you need to tweak the script and recommit the changes.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>git add *.sh
+</span></span><span style=display:flex><span>git commit -m <span style=color:#d88200>&#34;tweaked scripts&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>From <code>git's</code> perspective following stages occur:</p><ol><li>you started with an unmodified file, that&rsquo;s the <code>unmodified stage</code> in pic below</li><li>you edited the scripts, <a href=http://stackoverflow.com/questions/1778862/how-does-git-detect-that-a-file-has-been-modified>git tracks filesystem for changes</a>- that&rsquo;s the <code>modified stage</code></li><li>you add file back- your intent is to eventually commit this file- but you haven&rsquo;t done that yet. Thus <code>staged</code> stage</li><li>on commit, git takes the <code>staged</code> changes and commits them</li></ol><p>Here is an image from <a href=https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository>git scm book</a>, which explains how the files are tracked by git very well:</p><p><img src=/images/git-lifecycle.png alt="git various stages"></p><hr><h2 id=checking-status-of-files>checking status of files</h2><p>We have been creating and committing things. With projects you will generally have lot more files that just one/two files. And generally I keep an eye on what is modified and what is staged- to get a better picture of what things have changed and what I am committing. That&rsquo;s where <code>git status</code> comes into picture. For eg: this blog post hasn&rsquo;t been committed yet so if i do <code>git status</code> on my blog root directory I get:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">9
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ git status
+</span></span><span style=display:flex><span>On branch master
+</span></span><span style=display:flex><span>Changes not staged <span style=color:#00a8c8>for</span> commit:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>(</span>use <span style=color:#d88200>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>(</span>use <span style=color:#d88200>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	modified:   source/_posts/2015-05-16-notes-on-git.markdown
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>no changes added to commit <span style=color:#f92672>(</span>use <span style=color:#d88200>&#34;git add&#34;</span> and/or <span style=color:#d88200>&#34;git commit -a&#34;</span><span style=color:#f92672>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>Few things to note here:</p><ol><li>I am on <code>master</code> branch</li><li><code>git</code> tells me I have modified the file and can undo with <code>git checkout</code> command or stage with <code>git add</code> command</li></ol><p>Let&rsquo;s add a few more files to our scripts directory to go with- namely the pic for git-lifecycle and a README.md
+Now we have two newly added files and a staged file, git would generate something like this:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ git status
+</span></span><span style=display:flex><span>On branch master
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Initial commit
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Changes to be committed:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>(</span>use <span style=color:#d88200>&#34;git rm --cached &lt;file&gt;...&#34;</span> to unstage<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	new file:   weather.sh
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Untracked files:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>(</span>use <span style=color:#d88200>&#34;git add &lt;file&gt;...&#34;</span> to include in what will be committed<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	README.md
+</span></span><span style=display:flex><span>	lifecycle.png
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=tracking--staging-files>tracking & staging files</h2><p>Now that we know new files have to be added for tracking (and are staged) and modified files have to be added as well (for staging). However one of the things to note is <code>git add</code> command stages file based on it&rsquo;s contents and at that time.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ git add --all
+</span></span><span style=display:flex><span>$ git status
+</span></span><span style=display:flex><span>On branch master
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Initial commit
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Changes to be committed:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>(</span>use <span style=color:#d88200>&#34;git rm --cached &lt;file&gt;...&#34;</span> to unstage<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	new file:   README.md
+</span></span><span style=display:flex><span>	new file:   lifecycle.png
+</span></span><span style=display:flex><span>	new file:   weather.sh
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>$ git commit -m <span style=color:#d88200>&#34;initial commit&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>Let&rsquo;s add a few things to <code>README.md</code> and then stage the file. After staging file you realize you missed a few thingsi to note so tweak <code>README.md</code> again and if you check <code>git status</code> now you will see:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ vim README.md
+</span></span><span style=display:flex><span>// tweak a few things
+</span></span><span style=display:flex><span>$ git add README.md
+</span></span><span style=display:flex><span>// again tweak a few things
+</span></span><span style=display:flex><span>$ vim README.md
+</span></span><span style=display:flex><span>$ git status
+</span></span><span style=display:flex><span>On branch master
+</span></span><span style=display:flex><span>Changes to be committed:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>(</span>use <span style=color:#d88200>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	modified:   README.md
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Changes not staged <span style=color:#00a8c8>for</span> commit:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>(</span>use <span style=color:#d88200>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>(</span>use <span style=color:#d88200>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	modified:   README.md
+</span></span></code></pre></td></tr></table></div></div><p>You thought you already staged the file- which you did but that was at earlier point of time, contents have changed. Thing to note is git tracks/stages file based on contents, <a href=http://git-scm.com/book/en/v2/Git-Internals-Git-Objects>it internally generates SHA1 HASH</a>.
+The right way to fix things is to re-stage the <code>README.md</code> file and then commit. Simplest way is to use command <code>git add --all</code>, this will take care of adding/removing/stating files- but it does for everything. For managing what get&rsquo;s staged you should setup <code>.gitingore</code> file- so you can neglect generated/intermediate stuff that you don&rsquo;t care about tracking.</p><hr><h2 id=gitconfig>gitconfig</h2><p>helps <a href=https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration>customize</a> your global <code>git</code> settings or just for your repo. Here is list of configs for my local repo. Most common config is to provide for <code>user.name</code> and <code>user.email</code> and a few more tweaks. Even <a href=/2018/02/15/gpg-signing-github-commits/>signing commits is a config</a>.</p><p>From <a href=https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration>git-scm</a>:</p><p>First, a quick review: Git uses a series of configuration files to determine non-default behavior that you may want. The first place Git looks for these values is in the system-wide /etc/gitconfig file, which contains settings that are applied to every user on the system and all of their repositories. If you pass the option &ndash;system to git config, it reads and writes from this file specifically.</p><p>The next place Git looks is the ~/.gitconfig (or ~/.config/git/config) file, which is specific to each user. You can make Git read and write to this file by passing the &ndash;global option.</p><p>Finally, Git looks for configuration values in the configuration file in the Git directory (.git/config) of whatever repository you’re currently using. These values are specific to that single repository, and represent passing the &ndash;local option to git config. If you don’t specify which level you want to work with, this is the default.</p><pre tabindex=0><code>git config --list
+core.repositoryformatversion=0
+core.filemode=false
+core.bare=false
+core.logallrefupdates=true
+remote.origin.url=https://github.com/sarangbaheti/blog.git
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+branch.source.remote=origin
+branch.source.merge=refs/heads/source
+user.name=Sarang Baheti
+user.email=**********@users.noreply.github.com
+</code></pre><p>to display entire list of what you can <code>git config --list</code> & press tab</p><pre tabindex=0><code>git config --list
+Display all 324 possibilities? (y or n)
+add.ignoreErrors                color.status.nobranch           diff.mnemonicprefix             http.lowSpeedLimit              pack.window 
+advice.amWorkDir                color.status.remoteBranch       diff.noprefix                   http.lowSpeedTime               pack.windowMemory 
+advice.commitBeforeMerge        color.status.unmerged           diff.renameLimit                http.maxRequests                pager.
+advice.detachedHead             color.status.untracked          diff.renames                    http.minSessions                pretty.
+advice.ignoredHook              color.status.updated            diff.statGraphWidth             http.noEPSV                     pull.octopus 
+advice.implicitIdentity         color.ui                        diff.submodule                  http.postBuffer                 pull.twohead 
+advice.pushAlreadyExists        commit.cleanup                  diff.suppressBlankEmpty         http.proxy                      push.default 
+advice.pushFetchFirst           commit.gpgSign                  diff.tool                       http.sslCAInfo                  push.followTags 
+advice.pushNeedsForce           commit.status                   diff.wordRegex                  http.sslCAPath                  rebase.autosquash 
+advice.pushNonFFCurrent         commit.template                 difftool.                       http.sslCert                    rebase.stat 
+advice.pushNonFFMatching        commit.verbose                  difftool.prompt                 http.sslCertPasswordProtected   receive.autogc 
+advice.pushUpdateRejected       core.abbrev                     fetch.recurseSubmodules         http.sslCipherList              receive.denyCurrentBranch 
+advice.resolveConflict          core.askpass                    fetch.unpackLimit               http.sslKey                     receive.denyDeleteCurrent 
+advice.rmHints                  core.attributesfile             format.attach                   http.sslVerify                  receive.denyDeletes 
+advice.statusHints              core.autocrlf                   format.cc                       http.sslVersion                 receive.denyNonFastForwards 
+advice.statusUoption            core.bare                       format.coverLetter              http.useragent                  receive.fsckObjects 
+alias.                          core.bigFileThreshold           format.from                     i18n.commitEncoding             receive.unpackLimit 
+</code></pre><hr><h2 id=ignoring-files>ignoring files</h2><p>not every file needs to be tracked in git repository. With C++ compilers generate tons of obj/archives and other temp files which we don&rsquo;t care about to track. to let git know about what not to track you should. For eg: I was checking <code>Rakefile</code> in blog root dir for pushing stuff to git as part of deploy. I have it open in <code>vim</code> and made a few changes. <code>vim</code> being <code>vim</code> will create a temporary <code>Rakefile.swp</code>, which I don&rsquo;t care about, so is ideal candidate for ignoring. Here we go about ignoring things: :)</p><p>A quick check on my blog root directory says these files are set to be ignored</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ more .gitignore 
+</span></span><span style=display:flex><span>.bundle
+</span></span><span style=display:flex><span>.DS_Store
+</span></span><span style=display:flex><span>.sass-cache
+</span></span><span style=display:flex><span>.gist-cache
+</span></span><span style=display:flex><span>.pygments-cache
+</span></span><span style=display:flex><span>_deploy
+</span></span><span style=display:flex><span>public
+</span></span><span style=display:flex><span>sass.old
+</span></span><span style=display:flex><span>source.old
+</span></span><span style=display:flex><span>source/_stash
+</span></span><span style=display:flex><span>source/stylesheets/screen.css
+</span></span><span style=display:flex><span>vendor
+</span></span><span style=display:flex><span>node_modules
+</span></span><span style=display:flex><span>Gemfile.lock
+</span></span></code></pre></td></tr></table></div></div><p>to add more to it i would <code>vim .\.gitingore</code> and add <code>*.swp</code> at the end and that&rsquo;s it. You can add files/directories to <code>.gitignore</code> and it should just work fine. Here are a few rules to keep in mind, <a href=https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository#Ignoring-Files>source</a></p><blockquote><p>The rules for the patterns you can put in the .gitignore file are as follows:</p></blockquote><ol><li>Blank lines or lines starting with # are ignored.</li><li>Standard glob patterns work.</li><li>You can end patterns with a forward slash (/) to specify a directory.</li><li>You can negate a pattern by starting it with an exclamation point (!).</li></ol><hr><h2 id=viewing-changes>viewing changes</h2><p>Now that things have been set, it&rsquo;s time start checking what changes are there before committing or staging. This is one of my most common workflow. I keep on staging and diffing files- love reviewing my own code :)</p><p>I just added <code>*.swp</code> to <code>.gitignore</code>, if i do <code>git diff</code> command with no arguments it will tell me about all the files that have changed and the differences:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">9
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>diff --git a/.gitignore b/.gitignore
+</span></span><span style=display:flex><span>index f8a6236..8f85703 <span style=color:#ae81ff>100644</span>
+</span></span><span style=display:flex><span>--- a/.gitignore
+</span></span><span style=display:flex><span>+++ b/.gitignore
+</span></span><span style=display:flex><span>@@ -12,3 +12,4 @@ source/stylesheets/screen.css
+</span></span><span style=display:flex><span> vendor
+</span></span><span style=display:flex><span> node_modules
+</span></span><span style=display:flex><span> Gemfile.lock
+</span></span><span style=display:flex><span>+*.swp
+</span></span></code></pre></td></tr></table></div></div><p><code>git diff</code> shows you diffs in what is in your working directory vs staging area- so it highlights changes that have been made since you last staged the file. <a href=http://git-scm.com/docs/git-diff><code>git diff</code></a> takes in a lots of parameters but one of the most common is to see what you are committing and can be checked with <code>--staged</code> options.
+I have staged the <code>.gitignore</code> file so this is what i will be committing</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ git add .gitignore
+</span></span><span style=display:flex><span>$ git diff --staged
+</span></span><span style=display:flex><span>diff --git a/.gitignore b/.gitignore
+</span></span><span style=display:flex><span>index f8a6236..8f85703 <span style=color:#ae81ff>100644</span>
+</span></span><span style=display:flex><span>--- a/.gitignore
+</span></span><span style=display:flex><span>+++ b/.gitignore
+</span></span><span style=display:flex><span>@@ -12,3 +12,4 @@ source/stylesheets/screen.css
+</span></span><span style=display:flex><span> vendor
+</span></span><span style=display:flex><span> node_modules
+</span></span><span style=display:flex><span> Gemfile.lock
+</span></span><span style=display:flex><span>+*.swp
+</span></span></code></pre></td></tr></table></div></div><p>In case you want to see list of files that have been staged the command would be:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ git diff --name-only --staged
+</span></span><span style=display:flex><span>.gitignore
+</span></span><span style=display:flex><span>Gemfile
+</span></span><span style=display:flex><span>Rakefile
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=committing>committing</h2><p>we have been committing changes all this while, this is the last in the various stages we saw earlier. You can directly issue <code>git commit</code> command it will open an editor for you to enter comments, <code>vim</code> for me. In case you have terse comments you can bypass this with <code>-m</code> option with <code>git commit</code> as we have done already.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ git commit -m <span style=color:#d88200>&#34;updated .gitignore&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>master 2e55fe1<span style=color:#f92672>]</span> updated .gitignore
+</span></span><span style=display:flex><span> <span style=color:#ae81ff>1</span> file changed, <span style=color:#ae81ff>1</span> insertion<span style=color:#f92672>(</span>+<span style=color:#f92672>)</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>git commit</code> commits files that have been staged- at times with small changes two step process is a bit too much. I often make small changes and commit often. For this you can pass <code>-a</code> flag with commit command, would have worked the same</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ git commit -am <span style=color:#d88200>&#34;updated .gitignore&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>master 2e55fe1<span style=color:#f92672>]</span> updated .gitignore
+</span></span><span style=display:flex><span> <span style=color:#ae81ff>1</span> file changed, <span style=color:#ae81ff>1</span> insertion<span style=color:#f92672>(</span>+<span style=color:#f92672>)</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=removing-files>removing files</h2><p>This is a infrequent task and I would be careful with it. But comes in very handy when you have got un-neccessary files staged/committed. To remove the files from staging command would work.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>git rm --cached README.md
+</span></span></code></pre></td></tr></table></div></div><p>I would ask you to <a href=https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository#Removing-Files>refer git-scm book for details</a></p><hr><h2 id=statistics-and-history>statistics and history</h2><p>I have been committing things as I wrote this post. To check the commit history <code>git log</code> is the command:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ git log
+</span></span><span style=display:flex><span>commit 2e55fe118981f2ca4ee05d91c302b6f6441b8782
+</span></span><span style=display:flex><span>Author: sarangb &lt;---@---.com&gt;
+</span></span><span style=display:flex><span>Date:   Sat May <span style=color:#ae81ff>16</span> 12:55:02 <span style=color:#ae81ff>2015</span> -0700
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    updated .gitignore
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>commit 39b672252189e9053b05e7cd606a80b5497fae15
+</span></span><span style=display:flex><span>Author: sarangb &lt;---@---.com&gt;
+</span></span><span style=display:flex><span>Date:   Sat May <span style=color:#ae81ff>16</span> 11:53:00 <span style=color:#ae81ff>2015</span> -0700
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    added drafts
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>commit 41f41aaf3a0fee665ddaa8d1d8a09f5c8e13f4f5
+</span></span><span style=display:flex><span>Author: sarangb &lt;---@---.com&gt;
+</span></span><span style=display:flex><span>Date:   Sat May <span style=color:#ae81ff>16</span> 11:34:06 <span style=color:#ae81ff>2015</span> -0700
+</span></span></code></pre></td></tr></table></div></div><p>Or I can check in more details what was committed, <code>-p</code> shows difference in each commit and i am limiting it to last commit with <code>1</code> as option</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ git log -p -1
+</span></span><span style=display:flex><span>commit 2e55fe118981f2ca4ee05d91c302b6f6441b8782
+</span></span><span style=display:flex><span>Author: sarangb &lt;---@---.com&gt;
+</span></span><span style=display:flex><span>Date:   Sat May <span style=color:#ae81ff>16</span> 12:55:02 <span style=color:#ae81ff>2015</span> -0700
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    updated .gitignore
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>diff --git a/.gitignore b/.gitignore
+</span></span><span style=display:flex><span>index f8a6236..8f85703 <span style=color:#ae81ff>100644</span>
+</span></span><span style=display:flex><span>--- a/.gitignore
+</span></span><span style=display:flex><span>+++ b/.gitignore
+</span></span><span style=display:flex><span>@@ -12,3 +12,4 @@ source/stylesheets/screen.css
+</span></span><span style=display:flex><span> vendor
+</span></span><span style=display:flex><span> node_modules
+</span></span><span style=display:flex><span> Gemfile.lock
+</span></span><span style=display:flex><span>+*.swp
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>commit 39b672252189e9053b05e7cd606a80b5497fae15
+</span></span></code></pre></td></tr></table></div></div><p>For a brief summary I could alternatively have passed <code>--stat</code> option. Or to generate a list of commits i have done so far with this blog- but in a bit less verbose and human readable form i would do:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ git log --pretty<span style=color:#f92672>=</span>format:<span style=color:#d88200>&#34;%h - %an, %ad : %s&#34;</span>
+</span></span><span style=display:flex><span>2e55fe1 - sarangb, Sat May <span style=color:#ae81ff>16</span> 12:55:02 <span style=color:#ae81ff>2015</span> -0700 : updated .gitignore
+</span></span><span style=display:flex><span>39b6722 - sarangb, Sat May <span style=color:#ae81ff>16</span> 11:53:00 <span style=color:#ae81ff>2015</span> -0700 : added drafts
+</span></span><span style=display:flex><span>41f41aa - sarangb, Sat May <span style=color:#ae81ff>16</span> 11:34:06 <span style=color:#ae81ff>2015</span> -0700 : few more updates
+</span></span><span style=display:flex><span>9b002b5 - sarangb, Sat May <span style=color:#ae81ff>16</span> 10:17:26 <span style=color:#ae81ff>2015</span> -0700 : fixed build script
+</span></span><span style=display:flex><span>06a024f - sarangb, Sat May <span style=color:#ae81ff>16</span> 10:09:43 <span style=color:#ae81ff>2015</span> -0700 : updated <span style=color:#111>read</span> me <span style=color:#00a8c8>for</span> <span style=color:#111>source</span>
+</span></span><span style=display:flex><span>...
+</span></span></code></pre></td></tr></table></div></div><p>Options to <code>pretty=format</code> are:</p><pre><code>    1.  `%h` - will give you abbreviated commit hash
+    2.  `%an` - will give you author-name
+    3.  `%ad` - will give you the commit date-time
+    4.  `%s` - subject or short description from commit message
+</code></pre><p>For complete list of options <a href=https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History>visit this page</a></p><hr><h2 id=in-the-end-of-beginning>in the end of beginning</h2><p>this is just scatching the surface of what git provides- there is still lot to explore:</p><ol><li>branching</li><li>merging</li><li>various tools and tweaks</li><li>local server hosting, not sure if i will ever want to get into this</li></ol><hr><h2 id=a-few-references>a few references</h2><p>Well, this is most of the stuff I need to get started with git and octopress. Here are few resources that came in handy:</p><ol><li><a href=http://git-scm.com/docs>git-scm docs</a></li><li><a href=https://git-scm.com/book/en/v2>git-scm book</a></li><li><a href=https://training.github.com/kit/downloads/github-git-cheat-sheet.pdf>github-git-cheat-sheet</a></li><li><a href=http://stackoverflow.com/questions/tagged/git>stack-overflow</a></li></ol><div class=blog-tags><a href=https://www.variadic.xyz//tags/git/>git</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2015/05/10/adding-extra-swap-file-on-ubuntu/ data-toggle=tooltip data-placement=top title="adding extra swap file on ubuntu">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2015/05/16/vim/ data-toggle=tooltip data-placement=top title="vim & cscope">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+&nbsp;&bull;&nbsp;&copy;
+2022
+&nbsp;&bull;&nbsp;
+<a href=https://www.variadic.xyz/>a few notes</a></p><p class="credits theme-by text-muted"><a href=https://gohugo.io>Hugo v0.101.0</a> powered &nbsp;&bull;&nbsp; Theme <a href=https://github.com/halogenica/beautifulhugo>Beautiful Hugo</a> adapted from <a href=https://deanattali.com/beautiful-jekyll/>Beautiful Jekyll</a></p></div></div></div></footer><script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js integrity=sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4 crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js integrity=sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa crossorigin=anonymous></script>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js integrity=sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj crossorigin=anonymous></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=https://www.variadic.xyz/js/main.js></script><script>renderMathInElement(document.body)</script><script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js integrity=sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy crossorigin=anonymous></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js integrity=sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q crossorigin=anonymous></script><script src=https://www.variadic.xyz/js/load-photoswipe.js></script></body></html>
