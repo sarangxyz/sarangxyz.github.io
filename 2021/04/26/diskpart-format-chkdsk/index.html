@@ -1,4 +1,4 @@
-<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>diskpart format & check disk - a few notes</title><meta name=description content="diskpart reformatting drive as MBR & checkdisk"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2021\/04\/26\/diskpart-format-chkdsk\/","name":"Diskpart format \u0026 check disk"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"diskpart format \u0026 check disk","description":"diskpart reformatting drive as MBR \u0026amp; checkdisk","inLanguage":"en","wordCount":582,"datePublished":"2021-04-26T00:00:00","dateModified":"2021-04-26T00:00:00","image":"https:\/\/www.variadic.xyz\/","keywords":["misc, windows"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2021\/04\/26\/diskpart-format-chkdsk\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="diskpart format & check disk"><meta property="og:description" content="diskpart reformatting drive as MBR & checkdisk"><meta property="og:url" content="https://www.variadic.xyz/2021/04/26/diskpart-format-chkdsk/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="diskpart format & check disk"><meta name=twitter:description content="diskpart reformatting drive as MBR & checkdisk"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>diskpart format & check disk - a few notes</title><meta name=description content="diskpart reformatting drive as MBR & checkdisk"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/2021\/04\/26\/diskpart-format-chkdsk\/","name":"Diskpart format \u0026 check disk"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"diskpart format \u0026 check disk","description":"diskpart reformatting drive as MBR \u0026amp; checkdisk","inLanguage":"en","wordCount":724,"datePublished":"2021-04-26T00:00:00","dateModified":"2021-04-26T00:00:00","image":"https:\/\/www.variadic.xyz\/","keywords":["misc, windows"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/2021\/04\/26\/diskpart-format-chkdsk\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="diskpart format & check disk"><meta property="og:description" content="diskpart reformatting drive as MBR & checkdisk"><meta property="og:url" content="https://www.variadic.xyz/2021/04/26/diskpart-format-chkdsk/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="diskpart format & check disk"><meta name=twitter:description content="diskpart reformatting drive as MBR & checkdisk"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
 <span class=sr-only>Toggle navigation</span>
 <span class=icon-bar></span>
 <span class=icon-bar></span>
@@ -7,149 +7,291 @@
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
 <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>diskpart format & check disk</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on April 26, 2021</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><pre tabindex=0><code>C:\WINDOWS\system32&gt;diskpart
-
-Microsoft DiskPart version 10.0.18362.1171
-
-Copyright (C) Microsoft Corporation.
-On computer: ******
-
-DISKPART&gt; list disk
-
-  Disk ###  Status         Size     Free     Dyn  Gpt
-  --------  -------------  -------  -------  ---  ---
-  Disk 0    Online          931 GB  2048 KB        *
-  Disk 2    Online          698 GB   698 GB
-
-DISKPART&gt; select disk 2
-
-Disk 2 is now the selected disk.
-
-DISKPART&gt; list disk
-
-  Disk ###  Status         Size     Free     Dyn  Gpt
-  --------  -------------  -------  -------  ---  ---
-  Disk 0    Online          931 GB  2048 KB        *
-* Disk 2    Online          698 GB   698 GB
-
-DISKPART&gt; convert mbr
-
-DiskPart successfully converted the selected disk to MBR format.
-
-DISKPART&gt; create partition primary
-
-DiskPart succeeded in creating the specified partition.
-
-DISKPART&gt; list disk
-
-  Disk ###  Status         Size     Free     Dyn  Gpt
-  --------  -------------  -------  -------  ---  ---
-  Disk 0    Online          931 GB  2048 KB        *
-* Disk 2    Online          698 GB      0 B
-
-DISKPART&gt; select part 1
-
-Partition 1 is now the selected partition.
-
-DISKPART&gt; format fs=ntfs  quick
-
-  100 percent completed
-
-DiskPart successfully formatted the volume.
-
-DISKPART&gt; assign
-
-DiskPart successfully assigned the drive letter or mount point.
-
-DISKPART&gt; list volume
-
-  Volume ###  Ltr  Label        Fs     Type        Size     Status     Info
-  ----------  ---  -----------  -----  ----------  -------  ---------  --------
-  Volume 0     D                       DVD-ROM         0 B  No Media
-  Volume 1     C   OSDisk       NTFS   Partition    291 GB  Healthy    Boot
-  Volume 2     E   New Volume   NTFS   Partition    638 GB  Healthy
-  Volume 3         Windows RE   NTFS   Partition    499 MB  Healthy    Hidden
-  Volume 4         SYSTEM       FAT32  Partition    499 MB  Healthy    System
-  Volume 5                      NTFS   Partition    571 MB  Healthy    Hidden
-* Volume 6     F                NTFS   Partition    698 GB  Healthy
-</code></pre><hr><p>about checking disks with diskpart:</p><pre tabindex=0><code>E:\delete&gt;diskpart
-
-Microsoft DiskPart version 10.0.18362.1171
-
-Copyright (C) Microsoft Corporation.
-On computer: ********
-
-DISKPART&gt; list
-
-Microsoft DiskPart version 10.0.18362.1171
-
-DISK        - Display a list of disks. For example, LIST DISK.
-PARTITION   - Display a list of partitions on the selected disk.
-              For example, LIST PARTITION.
-VOLUME      - Display a list of volumes. For example, LIST VOLUME.
-VDISK       - Displays a list of virtual disks.
-
-DISKPART&gt; list disk
-
-  Disk ###  Status         Size     Free     Dyn  Gpt
-  --------  -------------  -------  -------  ---  ---
-  Disk 0    Online          931 GB  2048 KB        *
-  Disk 1    Online          698 GB      0 B        *
-  Disk 2    Online          465 GB  1024 KB        *
-
-DISKPART&gt; select disk 2
-
-Disk 2 is now the selected disk.
-
-DISKPART&gt; list partition
-
-  Partition ###  Type              Size     Offset
-  -------------  ----------------  -------  -------
-  Partition 1    System             512 MB  1024 KB
-  Partition 2    Unknown            465 GB   513 MB
-
-DISKPART&gt; clean
-
-DiskPart succeeded in cleaning the disk.
-
-DISKPART&gt; list disk
-
-  Disk ###  Status         Size     Free     Dyn  Gpt
-  --------  -------------  -------  -------  ---  ---
-  Disk 0    Online          931 GB  2048 KB        *
-  Disk 1    Online          698 GB      0 B        *
-* Disk 2    Online          465 GB   465 GB
-
-DISKPART&gt;
-</code></pre><p><br>similarly checking with <code>chkdsk</code></p><pre tabindex=0><code>E:\delete&gt;chkdsk H: /r
-The type of the file system is NTFS.
-Volume label is HITACHI.
-
-Stage 1: Examining basic file system structure ...
-  256 file records processed.
-File verification completed.
-  0 large file records processed.
-  0 bad file records processed.
-
-Stage 2: Examining file name linkage ...
-  278 index entries processed.
-Index verification completed.
-  0 unindexed files scanned.
-  0 unindexed files recovered to lost and found.
-  0 reparse records processed.
-  0 reparse records processed.
-
-Stage 3: Examining security descriptors ...
-Security descriptor verification completed.
-  11 data files processed.
-
-Stage 4: Looking for bad clusters in user file data ...
-  240 files processed.
-File data verification completed.
-
-Stage 5: Looking for bad, free clusters ...
-Progress: 24519183 of 122064974 done; Stage: 20%; Total: 20%; ETA:   1:19:13
-</code></pre><div class=blog-tags><a href=https://www.variadic.xyz//tags/misc/>misc</a>&nbsp;
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>diskpart format & check disk</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on April 26, 2021</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">49
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">50
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">51
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">52
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">53
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">54
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">55
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">56
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">57
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">58
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">59
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">60
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">61
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">62
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">63
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">64
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">65
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bat data-lang=bat><span style=display:flex><span>C<span style=color:#111>:</span><span style=color:#111>\WINDOWS\system32</span><span style=color:#75715e>&gt;diskpart</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Microsoft DiskPart version 10.0.18362.1171
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Copyright (C) Microsoft Corporation.
+</span></span><span style=display:flex><span>On computer: ******
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> list disk
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  Disk ###  Status         Size     Free     Dyn  Gpt
+</span></span><span style=display:flex><span>  --------  -------------  -------  -------  ---  ---
+</span></span><span style=display:flex><span>  Disk 0    Online          931 GB  2048 KB        *
+</span></span><span style=display:flex><span>  Disk 2    Online          698 GB   698 GB
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> select disk 2
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Disk 2 is now the selected disk.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> list disk
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  Disk ###  Status         Size     Free     Dyn  Gpt
+</span></span><span style=display:flex><span>  --------  -------------  -------  -------  ---  ---
+</span></span><span style=display:flex><span>  Disk 0    Online          931 GB  2048 KB        *
+</span></span><span style=display:flex><span>* Disk 2    Online          698 GB   698 GB
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> convert mbr
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DiskPart successfully converted the selected disk to MBR format.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> create partition primary
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DiskPart succeeded in creating the specified partition.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> list disk
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  Disk ###  Status         Size     Free     Dyn  Gpt
+</span></span><span style=display:flex><span>  --------  -------------  -------  -------  ---  ---
+</span></span><span style=display:flex><span>  Disk 0    Online          931 GB  2048 KB        *
+</span></span><span style=display:flex><span>* Disk 2    Online          698 GB      0 B
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> select part 1
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Partition 1 is now the selected partition.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> format fs=ntfs  quick
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  100 percent completed
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DiskPart successfully formatted the volume.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> assign
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DiskPart successfully assigned the drive letter or mount point.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> list volume
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  Volume ###  Ltr  Label        Fs     Type        Size     Status     Info
+</span></span><span style=display:flex><span>  ----------  ---  -----------  -----  ----------  -------  ---------  --------
+</span></span><span style=display:flex><span>  Volume 0     D                       DVD-ROM         0 B  No Media
+</span></span><span style=display:flex><span>  Volume 1     C   OSDisk       NTFS   Partition    291 GB  Healthy    Boot
+</span></span><span style=display:flex><span>  Volume 2     E   New Volume   NTFS   Partition    638 GB  Healthy
+</span></span><span style=display:flex><span>  Volume 3         Windows RE   NTFS   Partition    499 MB  Healthy    Hidden
+</span></span><span style=display:flex><span>  Volume 4         SYSTEM       FAT32  Partition    499 MB  Healthy    System
+</span></span><span style=display:flex><span>  Volume 5                      NTFS   Partition    571 MB  Healthy    Hidden
+</span></span><span style=display:flex><span>* Volume 6     F                NTFS   Partition    698 GB  Healthy
+</span></span></code></pre></td></tr></table></div></div><p><br>about checking disks with diskpart:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">49
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bat data-lang=bat><span style=display:flex><span>E<span style=color:#111>:</span><span style=color:#111>\delete</span><span style=color:#75715e>&gt;diskpart</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Microsoft DiskPart version 10.0.18362.1171
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Copyright (C) Microsoft Corporation.
+</span></span><span style=display:flex><span>On computer: ********
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> list
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Microsoft DiskPart version 10.0.18362.1171
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISK        - Display a list of disks. For example, LIST DISK.
+</span></span><span style=display:flex><span>PARTITION   - Display a list of partitions on the selected disk.
+</span></span><span style=display:flex><span>              <span style=color:#00a8c8>For</span> example, LIST PARTITION.
+</span></span><span style=display:flex><span>VOLUME      - Display a list of volumes. For example, LIST VOLUME.
+</span></span><span style=display:flex><span>VDISK       - Displays a list of virtual disks.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> list disk
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  Disk ###  Status         Size     Free     Dyn  Gpt
+</span></span><span style=display:flex><span>  --------  -------------  -------  -------  ---  ---
+</span></span><span style=display:flex><span>  Disk 0    Online          931 GB  2048 KB        *
+</span></span><span style=display:flex><span>  Disk 1    Online          698 GB      0 B        *
+</span></span><span style=display:flex><span>  Disk 2    Online          465 GB  1024 KB        *
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> select disk 2
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Disk 2 is now the selected disk.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> list partition
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  Partition ###  Type              Size     Offset
+</span></span><span style=display:flex><span>  -------------  ----------------  -------  -------
+</span></span><span style=display:flex><span>  Partition 1    System             512 MB  1024 KB
+</span></span><span style=display:flex><span>  Partition 2    Unknown            465 GB   513 MB
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> clean
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DiskPart succeeded in cleaning the disk.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART<span style=color:#111>&gt;</span> list disk
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  Disk ###  Status         Size     Free     Dyn  Gpt
+</span></span><span style=display:flex><span>  --------  -------------  -------  -------  ---  ---
+</span></span><span style=display:flex><span>  Disk 0    Online          931 GB  2048 KB        *
+</span></span><span style=display:flex><span>  Disk 1    Online          698 GB      0 B        *
+</span></span><span style=display:flex><span>* Disk 2    Online          465 GB   465 GB
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DISKPART&gt;
+</span></span></code></pre></td></tr></table></div></div><p><br>similarly checking with <code>chkdsk</code></p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bat data-lang=bat><span style=display:flex><span>E<span style=color:#111>:</span><span style=color:#111>\delete</span><span style=color:#75715e>&gt;chkdsk H: /r</span>
+</span></span><span style=display:flex><span>The type of the file system is NTFS.
+</span></span><span style=display:flex><span>Volume label is HITACHI.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Stage 1: Examining basic file system structure ...
+</span></span><span style=display:flex><span>  256 file records processed.
+</span></span><span style=display:flex><span>File verification completed.
+</span></span><span style=display:flex><span>  0 large file records processed.
+</span></span><span style=display:flex><span>  0 bad file records processed.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Stage 2: Examining file name linkage ...
+</span></span><span style=display:flex><span>  278 index entries processed.
+</span></span><span style=display:flex><span>Index verification completed.
+</span></span><span style=display:flex><span>  0 unindexed files scanned.
+</span></span><span style=display:flex><span>  0 unindexed files recovered to lost and found.
+</span></span><span style=display:flex><span>  0 reparse records processed.
+</span></span><span style=display:flex><span>  0 reparse records processed.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Stage 3: Examining security descriptors ...
+</span></span><span style=display:flex><span>Security descriptor verification completed.
+</span></span><span style=display:flex><span>  11 data files processed.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Stage 4: Looking for bad clusters in user file data ...
+</span></span><span style=display:flex><span>  240 files processed.
+</span></span><span style=display:flex><span>File data verification completed.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Stage 5: Looking for bad, free clusters ...
+</span></span><span style=display:flex><span>Progress: 24519183 of 122064974 done; Stage: 20%; Total: 20%; ETA:   1:19:13
+</span></span></code></pre></td></tr></table></div></div>&nbsp;<div class=blog-tags><a href=https://www.variadic.xyz//tags/misc/>misc</a>&nbsp;
 <a href=https://www.variadic.xyz//tags/windows/>windows</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2021/04/12/libvmaf-output/ data-toggle=tooltip data-placement=top title="vmaf output">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2021/05/01/demangler/ data-toggle=tooltip data-placement=top title="demangle c++ fn names">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
 &nbsp;&bull;&nbsp;&copy;
 2023

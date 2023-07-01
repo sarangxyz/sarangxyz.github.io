@@ -1,4 +1,4 @@
-<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>gpg signing github commits - a few notes</title><meta name=description content="details/notes on how to sign git commits with gpg"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/post\/0124-gpg-signing-github-commits\/","name":"Gpg signing github commits"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"gpg signing github commits","description":"details\/notes on how to sign git commits with gpg","inLanguage":"en","wordCount":1011,"datePublished":"2018-02-15T20:11:01","dateModified":"2018-02-15T20:11:01","image":"https:\/\/www.variadic.xyz\/","keywords":["git"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/post\/0124-gpg-signing-github-commits\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="gpg signing github commits"><meta property="og:description" content="details/notes on how to sign git commits with gpg"><meta property="og:url" content="https://www.variadic.xyz/post/0124-gpg-signing-github-commits/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="gpg signing github commits"><meta name=twitter:description content="details/notes on how to sign git commits with gpg"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>gpg signing github commits - a few notes</title><meta name=description content="details/notes on how to sign git commits with gpg"><meta name=author content="Sarang Baheti"><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","name":"a few notes","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Organization","name":"","url":"https:\/\/www.variadic.xyz\/"}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.variadic.xyz\/","name":"home"}},{"@type":"ListItem","position":3,"item":{"@id":"https:\/\/www.variadic.xyz\/post\/0124-gpg-signing-github-commits\/","name":"Gpg signing github commits"}}]}</script><script type=application/ld+json>{"@context":"http://schema.org","@type":"Article","author":{"name":"Sarang Baheti"},"headline":"gpg signing github commits","description":"details\/notes on how to sign git commits with gpg","inLanguage":"en","wordCount":1084,"datePublished":"2018-02-15T20:11:01","dateModified":"2018-02-15T20:11:01","image":"https:\/\/www.variadic.xyz\/","keywords":["git"],"mainEntityOfPage":"https:\/\/www.variadic.xyz\/post\/0124-gpg-signing-github-commits\/","publisher":{"@type":"Organization","name":"https:\/\/www.variadic.xyz\/","logo":{"@type":"ImageObject","url":"https:\/\/www.variadic.xyz\/","height":60,"width":60}}}</script><meta property="og:title" content="gpg signing github commits"><meta property="og:description" content="details/notes on how to sign git commits with gpg"><meta property="og:url" content="https://www.variadic.xyz/post/0124-gpg-signing-github-commits/"><meta property="og:type" content="website"><meta property="og:site_name" content="a few notes"><meta name=twitter:title content="gpg signing github commits"><meta name=twitter:description content="details/notes on how to sign git commits with gpg"><meta name=twitter:card content="summary_large_image"><meta name=generator content="Hugo 0.101.0"><link rel=alternate href=https://www.variadic.xyz/index.xml type=application/rss+xml title="a few notes"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.5.0/css/all.css integrity=sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU crossorigin=anonymous><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link rel=stylesheet href=https://www.variadic.xyz/css/main.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"><link rel=stylesheet href=https://www.variadic.xyz/css/syntax.css><link rel=stylesheet href=https://www.variadic.xyz/css/codeblock.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css integrity=sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css integrity=sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R crossorigin=anonymous><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,i=t.createElement(n),a=t.getElementsByTagName(n)[0],i.async=1,i.src=s,a.parentNode.insertBefore(i,a)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-27935503-1","auto"),ga("send","pageview"))</script></head><body><nav class="navbar navbar-default navbar-fixed-top navbar-custom"><div class=container-fluid><div class=navbar-header><button type=button class=navbar-toggle data-toggle=collapse data-target=#main-navbar>
 <span class=sr-only>Toggle navigation</span>
 <span class=icon-bar></span>
 <span class=icon-bar></span>
@@ -8,70 +8,130 @@
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
 <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
 <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>gpg signing github commits</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on February 15, 2018</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><p>With <code>git</code> it is easy to overwrite someone as author or commit as someone else. Then how do you know it was someone who committed the changes?
-That&rsquo;s where the gpg signing comes into picture.</p><blockquote><p>this is my first gpg signed post</p></blockquote><p>One thing to note is that once you have generated gpg keys from <code>git bash</code> then you can&rsquo;t use them from windows command prompt. I found it rather handy to install gnugpg and then generating keys with gpg.
-One thing i had to setup explicitly is to tell <code>git</code> where to find <code>gpg</code> so it asks me <code>passcode</code> . Anyway the command is:</p><pre tabindex=0><code>git config --global gpg.program &#34;C:\GnuPG\bin\gpg.exe&#34;
-</code></pre><p>A few links of interest around this topic:</p><ol><li><a href="https://news.ycombinator.com/item?id=7792026">Why-does-GitHub-let-me-commit-as-other-people</a></li><li><a href=http://git.661346.n2.nabble.com/GPG-signing-for-git-commit-td2582986.html>GPG-signing-for-git-commit</a></li><li><a href=https://mikegerwitz.com/papers/git-horror-story.html>A git horror story: Repository Integrity With Signed Commits</a></li></ol><p>Anyway the most interesting <a href=https://security.stackexchange.com/a/33471>is this</a>:</p><link rel=stylesheet href=https://www.variadic.xyz/css/hugo-easy-gallery.css><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/images/internet-full-of-chimps.png alt=/images/internet-full-of-chimps.png></div><a href=/images/internet-full-of-chimps.png itemprop=contentUrl></a></figure></div><pre tabindex=0><code>
-$ gpg --gen-key
-gpg (GnuPG) 1.4.22; Copyright (C) 2015 Free Software Foundation, Inc.
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
-
-gpg: directory `/c/Users/sarang/.gnupg&#39; created
-gpg: new configuration file `/c/Users/sarang/.gnupg/gpg.conf&#39; created
-gpg: WARNING: options in `/c/Users/sarang/.gnupg/gpg.conf&#39; are not yet active during this run
-gpg: keyring `/c/Users/sarang/.gnupg/secring.gpg&#39; created
-gpg: keyring `/c/Users/sarang/.gnupg/pubring.gpg&#39; created
-Please select what kind of key you want:
-   (1) RSA and RSA (default)
-   (2) DSA and Elgamal
-   (3) DSA (sign only)
-   (4) RSA (sign only)
-Your selection? 1
-RSA keys may be between 1024 and 4096 bits long.
-What keysize do you want? (2048) 4096
-Requested keysize is 4096 bits
-Please specify how long the key should be valid.
-         0 = key does not expire
-      &lt;n&gt;  = key expires in n days
-      &lt;n&gt;w = key expires in n weeks
-      &lt;n&gt;m = key expires in n months
-      &lt;n&gt;y = key expires in n years
-Key is valid for? (0)
-Key does not expire at all
-Is this correct? (y/N) y
-
-You need a user ID to identify your key; the software constructs the user ID
-from the Real Name, Comment and Email Address in this form:
-    &#34;Heinrich Heine (Der Dichter) &lt;heinrichh@duesseldorf.de&gt;&#34;
-
-
-Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
-You need a Passphrase to protect your secret key.
-
-We need to generate a lot of random bytes. It is a good idea to perform
-some other action (type on the keyboard, move the mouse, utilize the
-disks) during the prime generation; this gives the random number
-generator a better chance to gain enough entropy.
-.+++++
-..............+++++
-We need to generate a lot of random bytes. It is a good idea to perform
-some other action (type on the keyboard, move the mouse, utilize the
-disks) during the prime generation; this gives the random number
-generator a better chance to gain enough entropy.
-+++++
-...+++++
-gpg: /c/Users/sarang/.gnupg/trustdb.gpg: trustdb created
-gpg: key 67756F47 marked as ultimately trusted
-public and secret key created and signed.
-
-gpg: checking the trustdb
-gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
-gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
-pub   4096R/67756F47 2018-02-16
-      Key fingerprint = 0300 88C3 84F8 D046 3214  A715 2B2A 845D 6775 6F47
-uid                  Sarang &lt;*@*.*&gt;
-sub   4096R/05A5640E 2018-02-16
-</code></pre><p>setting up gpg on linux is comparatively easier, first generate the gpg-key:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+That&rsquo;s where the gpg signing comes into picture.</p><blockquote><p>this is my first gpg signed post</p></blockquote><p><br>One thing to note is that once you have generated gpg keys from <code>git bash</code> then you can&rsquo;t use them from windows command prompt. I found it rather handy to install gnugpg and then generating keys with gpg.
+One thing i had to setup explicitly is to tell <code>git</code> where to find <code>gpg</code> so it asks me <code>passcode</code> . Anyway the command is:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>git config --global gpg.program <span style=color:#d88200>&#34;C:\GnuPG\bin\gpg.exe&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p><br>A few links of interest around this topic:</p><ol><li><a href="https://news.ycombinator.com/item?id=7792026">Why-does-GitHub-let-me-commit-as-other-people</a></li><li><a href=http://git.661346.n2.nabble.com/GPG-signing-for-git-commit-td2582986.html>GPG-signing-for-git-commit</a></li><li><a href=https://mikegerwitz.com/papers/git-horror-story.html>A git horror story: Repository Integrity With Signed Commits</a></li></ol><p><br>Anyway the most interesting <a href=https://security.stackexchange.com/a/33471>is this</a>:</p><link rel=stylesheet href=https://www.variadic.xyz/css/hugo-easy-gallery.css><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/images/internet-full-of-chimps.png alt=/images/internet-full-of-chimps.png></div><a href=/images/internet-full-of-chimps.png itemprop=contentUrl></a></figure></div><p><br>Anyway, here is how to generate a gpg signature on <code>git bash</code></p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">38
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">39
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">40
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">41
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">42
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">43
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">44
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">45
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">46
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">47
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">48
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">49
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">50
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">51
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">52
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">53
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">54
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">55
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">56
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">57
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">58
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">59
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">60
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>$ gpg --gen-key
+</span></span><span style=display:flex><span>gpg <span style=color:#f92672>(</span>GnuPG<span style=color:#f92672>)</span> 1.4.22<span style=color:#111>;</span> Copyright <span style=color:#f92672>(</span>C<span style=color:#f92672>)</span> <span style=color:#ae81ff>2015</span> Free Software Foundation, Inc.
+</span></span><span style=display:flex><span>This is free software: you are free to change and redistribute it.
+</span></span><span style=display:flex><span>There is NO WARRANTY, to the extent permitted by law.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>gpg: directory <span style=color:#d88200>`</span>/c/Users/sarang/.gnupg<span style=color:#d88200>&#39; created
+</span></span></span><span style=display:flex><span><span style=color:#d88200>gpg: new configuration file `/c/Users/sarang/.gnupg/gpg.conf&#39;</span> created
+</span></span><span style=display:flex><span>gpg: WARNING: options in <span style=color:#d88200>`</span>/c/Users/sarang/.gnupg/gpg.conf<span style=color:#d88200>&#39; are not yet active during this run
+</span></span></span><span style=display:flex><span><span style=color:#d88200>gpg: keyring `/c/Users/sarang/.gnupg/secring.gpg&#39;</span> created
+</span></span><span style=display:flex><span>gpg: keyring <span style=color:#d88200>`</span>/c/Users/sarang/.gnupg/pubring.gpg<span style=color:#960050;background-color:#1e0010>&#39;</span> created
+</span></span><span style=display:flex><span>Please <span style=color:#00a8c8>select</span> what kind of key you want:
+</span></span><span style=display:flex><span>   <span style=color:#f92672>(</span>1<span style=color:#f92672>)</span> RSA and RSA <span style=color:#f92672>(</span>default<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>   <span style=color:#f92672>(</span>2<span style=color:#f92672>)</span> DSA and Elgamal
+</span></span><span style=display:flex><span>   <span style=color:#f92672>(</span>3<span style=color:#f92672>)</span> DSA <span style=color:#f92672>(</span>sign only<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>   <span style=color:#f92672>(</span>4<span style=color:#f92672>)</span> RSA <span style=color:#f92672>(</span>sign only<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Your selection? <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>RSA keys may be between <span style=color:#ae81ff>1024</span> and <span style=color:#ae81ff>4096</span> bits long.
+</span></span><span style=display:flex><span>What keysize <span style=color:#00a8c8>do</span> you want? <span style=color:#f92672>(</span>2048<span style=color:#f92672>)</span> <span style=color:#ae81ff>4096</span>
+</span></span><span style=display:flex><span>Requested keysize is <span style=color:#ae81ff>4096</span> bits
+</span></span><span style=display:flex><span>Please specify how long the key should be valid.
+</span></span><span style=display:flex><span>         <span style=color:#111>0</span> <span style=color:#f92672>=</span> key does not expire
+</span></span><span style=display:flex><span>      &lt;n&gt;  <span style=color:#f92672>=</span> key expires in n days
+</span></span><span style=display:flex><span>      &lt;n&gt;w <span style=color:#f92672>=</span> key expires in n weeks
+</span></span><span style=display:flex><span>      &lt;n&gt;m <span style=color:#f92672>=</span> key expires in n months
+</span></span><span style=display:flex><span>      &lt;n&gt;y <span style=color:#f92672>=</span> key expires in n years
+</span></span><span style=display:flex><span>Key is valid <span style=color:#00a8c8>for</span>? <span style=color:#f92672>(</span>0<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Key does not expire at all
+</span></span><span style=display:flex><span>Is this correct? <span style=color:#f92672>(</span>y/N<span style=color:#f92672>)</span> y
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>You need a user ID to identify your key<span style=color:#111>;</span> the software constructs the user ID
+</span></span><span style=display:flex><span>from the Real Name, Comment and Email Address in this form:
+</span></span><span style=display:flex><span>    <span style=color:#d88200>&#34;Heinrich Heine (Der Dichter) &lt;heinrichh@duesseldorf.de&gt;&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Change <span style=color:#f92672>(</span>N<span style=color:#f92672>)</span>ame, <span style=color:#f92672>(</span>C<span style=color:#f92672>)</span>omment, <span style=color:#f92672>(</span>E<span style=color:#f92672>)</span>mail or <span style=color:#f92672>(</span>O<span style=color:#f92672>)</span>kay/<span style=color:#f92672>(</span>Q<span style=color:#f92672>)</span>uit? O
+</span></span><span style=display:flex><span>You need a Passphrase to protect your secret key.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>We need to generate a lot of random bytes. It is a good idea to perform
+</span></span><span style=display:flex><span>some other action <span style=color:#f92672>(</span><span style=color:#111>type</span> on the keyboard, move the mouse, utilize the
+</span></span><span style=display:flex><span>disks<span style=color:#f92672>)</span> during the prime generation<span style=color:#111>;</span> this gives the random number
+</span></span><span style=display:flex><span>generator a better chance to gain enough entropy.
+</span></span><span style=display:flex><span>.+++++
+</span></span><span style=display:flex><span>..............+++++
+</span></span><span style=display:flex><span>We need to generate a lot of random bytes. It is a good idea to perform
+</span></span><span style=display:flex><span>some other action <span style=color:#f92672>(</span><span style=color:#111>type</span> on the keyboard, move the mouse, utilize the
+</span></span><span style=display:flex><span>disks<span style=color:#f92672>)</span> during the prime generation<span style=color:#111>;</span> this gives the random number
+</span></span><span style=display:flex><span>generator a better chance to gain enough entropy.
+</span></span><span style=display:flex><span>+++++
+</span></span><span style=display:flex><span>...+++++
+</span></span><span style=display:flex><span>gpg: /c/Users/sarang/.gnupg/trustdb.gpg: trustdb created
+</span></span><span style=display:flex><span>gpg: key 67756F47 marked as ultimately trusted
+</span></span><span style=display:flex><span>public and secret key created and signed.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>gpg: checking the trustdb
+</span></span><span style=display:flex><span>gpg: <span style=color:#ae81ff>3</span> marginal<span style=color:#f92672>(</span>s<span style=color:#f92672>)</span> needed, <span style=color:#ae81ff>1</span> complete<span style=color:#f92672>(</span>s<span style=color:#f92672>)</span> needed, PGP trust model
+</span></span><span style=display:flex><span>gpg: depth: <span style=color:#ae81ff>0</span>  valid:   <span style=color:#ae81ff>1</span>  signed:   <span style=color:#ae81ff>0</span>  trust: 0-, 0q, 0n, 0m, 0f, 1u
+</span></span><span style=display:flex><span>pub   4096R/67756F47 2018-02-16
+</span></span><span style=display:flex><span>      Key <span style=color:#111>fingerprint</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0300</span> 88C3 84F8 D046 <span style=color:#ae81ff>3214</span>  A715 2B2A 845D <span style=color:#ae81ff>6775</span> 6F47
+</span></span><span style=display:flex><span>uid                  Sarang &lt;*@*.*&gt;
+</span></span><span style=display:flex><span>sub   4096R/05A5640E 2018-02-16
+</span></span></code></pre></td></tr></table></div></div><p><br>setting up gpg on linux is comparatively easier, first generate the gpg-key:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
 </span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
 </span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
 </span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
@@ -171,13 +231,13 @@ sub   4096R/05A5640E 2018-02-16
 </span></span><span style=display:flex><span>      ***************************************
 </span></span><span style=display:flex><span>uid                      Sarang Baheti <span style=color:#f92672>(</span>github email<span style=color:#f92672>)</span> &lt;***@**.*&gt;
 </span></span><span style=display:flex><span>sub   rsa4096 2020-07-04 <span style=color:#f92672>[</span>E<span style=color:#f92672>]</span> <span style=color:#f92672>[</span>expires: 2020-07-31<span style=color:#f92672>]</span>
-</span></span></code></pre></td></tr></table></div></div><p>once you have key generated, export public key, <code>gpg --armor --export &lt;KEY> > gpg.key.txt</code> does the job. Paste the key as it is in github gpg key.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span></span></code></pre></td></tr></table></div></div><p><br>once you have key generated, export public key, <code>gpg --armor --export &lt;KEY> > gpg.key.txt</code> does the job. Paste the key as it is in github gpg key.</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
 </span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>gpg --armor --export *************************************** &gt; gpg.key.txt
-</span></span></code></pre></td></tr></table></div></div><p>then just setup the git config to sign on each commit as below:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
+</span></span></code></pre></td></tr></table></div></div><p><br>then just setup the git config to sign on each commit as below:</p><div class=highlight><div style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1
 </span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2
 </span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>git config --global commit.gpgSign <span style=color:#111>true</span>
 </span></span><span style=display:flex><span>git config --global user.signingKey ***************************************
-</span></span></code></pre></td></tr></table></div></div><p>Note: if you have chosen to hide email from commits in github, they you would have a cryptic email <code>&lt;something>@users.noreply.github.com</code>, that is the email you need to generate key with.</p><p>In case you run into issues with not able to sign thru <code>gpg</code>, this <a href=https://stackoverflow.com/a/55993078>stackoverflow answer</a> is quite helpful.</p><div class=blog-tags><a href=https://www.variadic.xyz//tags/git/>git</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/post/0123-tweaking-hugo-summary/ data-toggle=tooltip data-placement=top title="Tweaking Hugo Summary">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/post/0125-error-handling-links/ data-toggle=tooltip data-placement=top title="Error Handling Links">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+</span></span></code></pre></td></tr></table></div></div><p><br>Note: if you have chosen to hide email from commits in github, they you would have a cryptic email <code>&lt;something>@users.noreply.github.com</code>, that is the email you need to generate key with.</p><p>In case you run into issues with not able to sign thru <code>gpg</code>, this <a href=https://stackoverflow.com/a/55993078>stackoverflow answer</a> is quite helpful.</p>&nbsp;<div class=blog-tags><a href=https://www.variadic.xyz//tags/git/>git</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/post/0123-tweaking-hugo-summary/ data-toggle=tooltip data-placement=top title="Tweaking Hugo Summary">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/post/0125-error-handling-links/ data-toggle=tooltip data-placement=top title="Error Handling Links">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
 &nbsp;&bull;&nbsp;&copy;
 2023
 &nbsp;&bull;&nbsp;

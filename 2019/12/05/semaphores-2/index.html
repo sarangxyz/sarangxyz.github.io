@@ -8,7 +8,7 @@
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
 <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
 <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header class=header-section><div class="intro-header no-img"><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><h1>notes on semaphores, part 2</h1><span class=post-meta><i class="fas fa-calendar"></i>&nbsp;Posted on December 5, 2019</span></div></div></div></div></div></header><div class=container role=main><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><article role=main class=blog-post><blockquote><p>Reference: The Little Book of Semaphores by Allen B. Downey
-<a href=http://greenteapress.com/semaphores/LittleBookOfSemaphores.pdf>Link1</a></p></blockquote><h3 id=semaphores>Semaphores</h3><hr><p>In real life a semaphore is a system of signals used to communicate visually, usually with flags, lights or some other mechanism. In software world it is a data structure for solving a variety of synchronization problems.</p><p>Semaphore was invented by <a href=https://en.wikipedia.org/wiki/Edsger_W._Dijkstra>Edsger W. Dijkstra</a>.</p><p>Semaphore is like an <code>int</code> with:</p><ul><li>Initialized with a value, only permitted operations are <code>increment\inc</code> and <code>decrement\dec</code>. One cannot query current value.</li><li>On <code>dec</code>, if value is negative, calling that thread blocks till semaphore gets to <code>0</code> or above.</li><li>On <code>inc</code> calling thread increments semaphore and other waiting thread gets unblocked</li></ul><blockquote><p>Note: when you signal a semaphore, you don&rsquo;t know if any thread is waiting on it or not.</p></blockquote><p>Value of Semaphore:</p><ul><li>if value is positive, it represents that #threads can <code>dec</code> without blocking</li><li>if value is negative, it represents that #threads are blocked and waiting</li><li>if value is 0, it means there are no waiting threads</li></ul><pre tabindex=0><code>s = semaphore(1); // &lt;&lt;-- creates a new semaphore with value 1
+<a href=http://greenteapress.com/semaphores/LittleBookOfSemaphores.pdf>Link1</a></p></blockquote><p> </p><h3 id=semaphores>Semaphores</h3><hr><p>In real life a semaphore is a system of signals used to communicate visually, usually with flags, lights or some other mechanism. In software world it is a data structure for solving a variety of synchronization problems.</p><p>Semaphore was invented by <a href=https://en.wikipedia.org/wiki/Edsger_W._Dijkstra>Edsger W. Dijkstra</a>.</p><p>Semaphore is like an <code>int</code> with:</p><ul><li>Initialized with a value, only permitted operations are <code>increment\inc</code> and <code>decrement\dec</code>. One cannot query current value.</li><li>On <code>dec</code>, if value is negative, calling that thread blocks till semaphore gets to <code>0</code> or above.</li><li>On <code>inc</code> calling thread increments semaphore and other waiting thread gets unblocked</li></ul><blockquote><p>Note: when you signal a semaphore, you don&rsquo;t know if any thread is waiting on it or not.</p></blockquote><p>Value of Semaphore:</p><ul><li>if value is positive, it represents that #threads can <code>dec</code> without blocking</li><li>if value is negative, it represents that #threads are blocked and waiting</li><li>if value is 0, it means there are no waiting threads</li></ul><pre tabindex=0><code>s = semaphore(1); // &lt;&lt;-- creates a new semaphore with value 1
 
 
 s.increment();      |
@@ -20,15 +20,12 @@ s.decrement();      |
 s.wait();           |   equivalent operations
 s.p();              |
 </code></pre><blockquote><p><code>inc</code> & <code>dec</code> is what operations do, <code>signal</code> and <code>wait</code> is what they are used for.
-<code>v</code> & <code>p</code> were original names used by EWD</p></blockquote><h3 id=basic-synchronization-pattern>Basic synchronization pattern</h3><hr><h4 id=signalling>signalling</h4><hr><p>Thread1 sends signal to other thread to indicate that something has happened. Makes it possible to guarantee that a secion of code in one thread will run before a section of code in another thread. This solves synchronization problem.</p><pre tabindex=0><code>sem = semaphore(1);
+<code>v</code> & <code>p</code> were original names used by EWD</p></blockquote><p> </p><h3 id=basic-synchronization-pattern>Basic synchronization pattern</h3><h4 id=signalling>signalling</h4><p>Thread1 sends signal to other thread to indicate that something has happened. Makes it possible to guarantee that a secion of code in one thread will run before a section of code in another thread. This solves synchronization problem.</p><pre tabindex=0><code>sem = semaphore(1);
 
    ThreadA                 ThreadB
    statement a1;           sem.wait();
    sem.signal()            statement b1;
-
-
-guarantees that a1 &lt; b1
-</code></pre><h4 id=rendezvous>rendezvous</h4><hr><p>Idea is that two or more threads rendezvous at a point of execution and neither is allowed to proceed until al have arrived. (This is very similar to barrier).</p><p>Problem:</p><pre tabindex=0><code>    ThreadA                 ThreadB
+</code></pre><p>guarantees that a1 &lt; b1</p><p> </p><h4 id=rendezvous>rendezvous</h4><p>Idea is that two or more threads rendezvous at a point of execution and neither is allowed to proceed until al have arrived. (This is very similar to barrier).</p><p>Problem:</p><pre tabindex=0><code>    ThreadA                 ThreadB
     A1                      B1
 &lt;&lt;&gt;&gt; --------------------------------- &lt;&lt;&gt;&gt;
     A2                      B2
@@ -40,7 +37,7 @@ semB = semaphore(2);
     semA.signal();          semB.signal();
     semB.wait();            semA.wait();
     A2                      B2
-</code></pre><p>This solution is hard-coded for just two threads and is not a practical. Also note the order of <code>signal</code> and <code>wait</code> for both semaphores. you need to <code>signal</code> before <code>wait</code> in each thread or it will lead to deadlock!</p><h4 id=mutex>mutex</h4><hr><p>semaphores can be used to enfoce mutual exclusions as well. A mutex is a like a token that moves from one thread to another.</p><blockquote><p><code>CriticalSection/cs</code> &ndash;> a section of code for which it is critically important to prevent concurrent access</p></blockquote><p>Problem:</p><pre tabindex=0><code>count = 0;
+</code></pre><p>This solution is hard-coded for just two threads and is not a practical. Also note the order of <code>signal</code> and <code>wait</code> for both semaphores. you need to <code>signal</code> before <code>wait</code> in each thread or it will lead to deadlock!</p><p> </p><h4 id=mutex>mutex</h4><p>semaphores can be used to enfoce mutual exclusions as well. A mutex is a like a token that moves from one thread to another.</p><blockquote><p><code>CriticalSection/cs</code> &ndash;> a section of code for which it is critically important to prevent concurrent access</p></blockquote><p>Problem:</p><pre tabindex=0><code>count = 0;
 
     ThreadA                 ThreadB
     count = count+1         count = count+1
@@ -50,7 +47,7 @@ semB = semaphore(2);
     sem.wait();             sem.wait();
     count = count+1         count = count+1
     sem.signal();           sem.signal();
-</code></pre><h4 id=multiplex>multiplex</h4><hr><p>Generalized mutex so that is allows multiple threads to run in <code>cs</code> at same time, but it enforces an upper limit on #concurrent thread access (reader-writer lock kind of thing).</p><p>Problem:</p><pre tabindex=0><code>
+</code></pre><p> </p><h4 id=multiplex>multiplex</h4><p>Generalized mutex so that is allows multiple threads to run in <code>cs</code> at same time, but it enforces an upper limit on #concurrent thread access (reader-writer lock kind of thing).</p><p>Problem:</p><pre tabindex=0><code>
     ThreadA                 ThreadB         ...     ThreadZ          
     statement;              statement;              statement;
 </code></pre><p>Solution:</p><pre tabindex=0><code>
@@ -60,7 +57,7 @@ m = semaphore(4); // only 4 threads can concurrently access a cs
     m.wait();               m.wait();               m.wait();        
     statement;              statement;              statement;
     m.signal();             m.signal();             m.signal();
-</code></pre><div class=blog-tags><a href=https://www.variadic.xyz//tags/parallel/>parallel</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2019/12/01/semaphores-1/ data-toggle=tooltip data-placement=top title="notes on semaphores, part 1">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2019/12/27/cellphones/ data-toggle=tooltip data-placement=top title="Are cell phones destroying the college classroom">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
+</code></pre>&nbsp;<div class=blog-tags><a href=https://www.variadic.xyz//tags/parallel/>parallel</a>&nbsp;</div></article><ul class="pager blog-pager"><li class=previous><a href=https://www.variadic.xyz/2019/12/01/semaphores-1/ data-toggle=tooltip data-placement=top title="notes on semaphores, part 1">&larr; Previous Post</a></li><li class=next><a href=https://www.variadic.xyz/2019/12/27/cellphones/ data-toggle=tooltip data-placement=top title="Are cell phones destroying the college classroom">Next Post &rarr;</a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center footer-links"></ul><p class="credits copyright text-muted">Sarang Baheti
 &nbsp;&bull;&nbsp;&copy;
 2023
 &nbsp;&bull;&nbsp;
